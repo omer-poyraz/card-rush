@@ -1,0 +1,7 @@
+Card Rush — Third-party licenses
+
+Godot Engine 4.7.2 — MIT License — Copyright (c) 2014-present Godot Engine contributors; (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+Baloo 2 font — SIL Open Font License 1.1 — Ek Type.
+Nunito font — SIL Open Font License 1.1 — The Nunito Project Authors.
+
+All card artwork, icons, logo, sounds and music were created for Card Rush.

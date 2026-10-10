@@ -39,7 +39,8 @@ static func open(table: TableView, v: Dictionary, e: Dictionary, me: int, client
 	var pv := Dialogs.titled_panel(Loc.t("RESULT_ROUND_WINNER", [table._seat_name(winner), int(e["points"])]), 700)
 	var box: VBoxContainer = pv[1]
 	var rows := _ranked(v)
-	rows.sort_custom(func(a, b): return a["score"] > b["score"])
+	var low := RuleProfile.from_dict(v["rules"]).scoring_mode == RuleProfile.ScoringMode.LOW_TALLY
+	rows.sort_custom(func(a, b): return a["score"] < b["score"] if low else a["score"] > b["score"])
 	for r in rows:
 		box.add_child(_row(r, me, int(r["seat"]) == winner, true))
 	var target := RuleProfile.from_dict(v["rules"]).target_score
@@ -91,9 +92,12 @@ static func open_match(v: Dictionary, me: int, xp_info: Dictionary, on_rematch: 
 	ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	crown.add_child(ic)
 	var rules := RuleProfile.from_dict(v["rules"])
-	var points_mode := rules.scoring_mode == RuleProfile.ScoringMode.POINTS
+	var points_mode := rules.scoring_mode != RuleProfile.ScoringMode.SINGLE_ROUND
+	var low := rules.scoring_mode == RuleProfile.ScoringMode.LOW_TALLY
 	var rows := _ranked(v)
-	if points_mode:
+	if low:
+		rows.sort_custom(func(a, b): return a["score"] < b["score"])
+	elif points_mode:
 		rows.sort_custom(func(a, b): return a["score"] > b["score"])
 	else:
 		rows.sort_custom(func(a, b): return (-1 if a["seat"] == winner else a["left"]) < (-1 if b["seat"] == winner else b["left"]))

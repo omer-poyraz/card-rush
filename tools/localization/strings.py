@@ -151,10 +151,12 @@ S = {
         "[b]Tek el:[/b] İlk kartlarını bitiren kazanır.\n\n"
         "[b]Puan modu:[/b] Eli kazanan, rakiplerin elinde kalan kartların puanını alır. Hedef puana (varsayılan 500) ilk ulaşan maçı kazanır.\n\n"
         "[b]Kart puanları:[/b] Sayı kartları üzerindeki sayı kadar · Pas Geç, Yön Değiştir, +2: 20 · Renk Değiştir ve +4: 50.\n\n"
+        "[b]Düşük puan (resmi alternatif):[/b] Her el sonunda herkes kendi elinde kalan kartların puanını toplar. Biri hedefe ulaşınca en düşük toplamlı oyuncu kazanır.\n\n"
         "Son kart +2 veya +4 ise sıradaki oyuncu yine kartları çeker ve bu kartlar puana eklenir.",
         "[b]Single hand:[/b] the first to empty their hand wins.\n\n"
         "[b]Points mode:[/b] the hand winner scores the value of the cards left in opponents' hands. First to the target (default 500) wins the match.\n\n"
         "[b]Card values:[/b] number cards = face value · Skip, Reverse, Draw Two: 20 · Wild and Wild Draw Four: 50.\n\n"
+        "[b]Low tally (official alternative):[/b] after each hand everyone adds up the points of the cards left in their OWN hand. When someone reaches the target, the lowest total wins.\n\n"
         "If the last card is a Draw Two or Wild Draw Four the next player still draws and those cards are scored."),
     "HELP_HOUSE": (
         "Ev kuralları [b]resmi kurallar değildir[/b] ve yalnızca oda/maç ayarında açılırsa geçerlidir. Masada \"Ev kuralları açık\" yazısı görünür.\n\n"
@@ -197,6 +199,7 @@ S = {
     "RULES_MODE": ("Bitiş", "Finish"),
     "RULES_MODE_SINGLE": ("Tek el", "Single hand"),
     "RULES_MODE_POINTS": ("Puan", "Points"),
+    "RULES_MODE_LOW": ("Düşük puan", "Low tally"),
     "RULES_TARGET": ("Hedef puan", "Target score"),
     "RULES_WD4": ("+4 denetimi", "+4 policing"),
     "RULES_WD4_CHALLENGE": ("İtiraz (resmi)", "Challenge (official)"),

@@ -1,0 +1,24 @@
+CARD RUSH — GİZLİLİK POLİTİKASI (TASLAK)
+Sürüm: taslak 0.1 · Geliştirici: Poyraz Yazılım
+Bu metin taslaktır ve yayınlanmadan önce hukuki olarak gözden geçirilmelidir.
+
+1. Toplanan veriler
+Card Rush hesap oluşturmanızı istemez. Oyuncu adınız, avatarınız, ayarlarınız ve oyun istatistikleriniz yalnızca cihazınızda saklanır ve geliştiriciye gönderilmez.
+
+2. Çevrim içi oyun (henüz etkin değil)
+Çok oyunculu özellikler eklendiğinde, oyunu kuran cihaz ile katılan cihazlar arasında oyuncu adı, avatar numarası ve oyun hamleleri doğrudan paylaşılır. Bu bölüm özellik yayınlandığında güncellenecektir.
+
+3. Sesli sohbet (henüz etkin değil)
+Sesli sohbet eklendiğinde mikrofon yalnızca sizin açtığınız sırada kullanılacak, ses kaydedilmeyecek ve yalnızca aynı odadaki oyunculara iletilecektir. Mikrofon kapalıyken ses gönderilmez.
+
+4. Reklamlar (henüz etkin değil)
+Reklamlar etkinleştirildiğinde Google AdMob kullanılacaktır. AdMob, Google'ın politikalarına göre cihaz tanımlayıcıları ve reklam etkileşim verileri işleyebilir. Gerekli bölgelerde reklamlar onayınız alınarak gösterilir.
+
+5. Satın almalar (henüz etkin değil)
+Satın almalar Google Play veya App Store üzerinden yapılır; ödeme bilgileriniz bize iletilmez.
+
+6. Çocuklar
+Card Rush 13 yaş altı çocuklardan bilerek kişisel veri toplamaz.
+
+7. İletişim
+[yayın öncesi iletişim adresi eklenecek]

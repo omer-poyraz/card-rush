@@ -620,7 +620,7 @@ func _refresh_seats(v: Dictionary) -> void:
 		v = view
 	if v.is_empty():
 		return
-	var show_score := _rules.scoring_mode == RuleProfile.ScoringMode.POINTS
+	var show_score := _rules.scoring_mode != RuleProfile.ScoringMode.SINGLE_ROUND
 	var vul := int(v.get("uno_vulnerable", -1))
 	for seat in seat_views:
 		var p: Dictionary = v["players"][seat].duplicate()
@@ -697,7 +697,7 @@ func _hint_text(v: Dictionary) -> String:
 
 func _info_text(v: Dictionary) -> String:
 	var parts := [Loc.t("TABLE_ROUND_N", [int(v["round"])])]
-	if _rules.scoring_mode == RuleProfile.ScoringMode.POINTS:
+	if _rules.scoring_mode != RuleProfile.ScoringMode.SINGLE_ROUND:
 		parts.append(Loc.t("TABLE_TARGET_N", [_rules.target_score]))
 	if not _rules.is_classic():
 		parts.append(tr("TABLE_HOUSE_RULES_ON"))

@@ -127,11 +127,15 @@ HELP_SCORING,"[b]Tek el:[/b] İlk kartlarını bitiren kazanır.
 
 [b]Kart puanları:[/b] Sayı kartları üzerindeki sayı kadar · Pas Geç, Yön Değiştir, +2: 20 · Renk Değiştir ve +4: 50.
 
+[b]Düşük puan (resmi alternatif):[/b] Her el sonunda herkes kendi elinde kalan kartların puanını toplar. Biri hedefe ulaşınca en düşük toplamlı oyuncu kazanır.
+
 Son kart +2 veya +4 ise sıradaki oyuncu yine kartları çeker ve bu kartlar puana eklenir.","[b]Single hand:[/b] the first to empty their hand wins.
 
 [b]Points mode:[/b] the hand winner scores the value of the cards left in opponents' hands. First to the target (default 500) wins the match.
 
 [b]Card values:[/b] number cards = face value · Skip, Reverse, Draw Two: 20 · Wild and Wild Draw Four: 50.
+
+[b]Low tally (official alternative):[/b] after each hand everyone adds up the points of the cards left in their OWN hand. When someone reaches the target, the lowest total wins.
 
 If the last card is a Draw Two or Wild Draw Four the next player still draws and those cards are scored."
 HELP_TAB_ACTIONS,Aksiyon,Actions
@@ -243,6 +247,7 @@ RULES_CLASSIC_SECTION,Klasik kurallar,Classic rules
 RULES_HOUSE_NOTE,Bunlar klasik kuralların parçası değildir. Açtığın her kural maç başında tüm oyunculara gösterilir.,These are not part of the classic rules. Every rule you enable is shown to all players before the match.
 RULES_HOUSE_SECTION,Ev kuralları (resmi değil),House rules (not official)
 RULES_MODE,Bitiş,Finish
+RULES_MODE_LOW,Düşük puan,Low tally
 RULES_MODE_POINTS,Puan,Points
 RULES_MODE_SINGLE,Tek el,Single hand
 RULES_SUMMARY_CLASSIC,Kural profili: Klasik (resmi kurallar),Rule profile: Classic (official rules)

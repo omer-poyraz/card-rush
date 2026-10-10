@@ -21,7 +21,21 @@ static func score_round(state: GameState, winner: int) -> Dictionary:
 		per_seat[i] = hp
 		if i != winner:
 			total += hp
-	state.players[winner].score += total
-	var over := state.profile.scoring_mode == RuleProfile.ScoringMode.SINGLE_ROUND \
-		or state.players[winner].score >= state.profile.target_score
-	return {"winner": winner, "points": total, "per_seat": per_seat, "match_over": over}
+	var mode := state.profile.scoring_mode
+	var match_winner := winner
+	var over := false
+	if mode == RuleProfile.ScoringMode.LOW_TALLY:
+		var top := 0
+		for i in state.players.size():
+			state.players[i].score += per_seat[i]
+			top = maxi(top, state.players[i].score)
+		over = top >= state.profile.target_score
+		if over:
+			# lowest running total wins; ties go to the player who went out this round
+			for i in state.players.size():
+				if state.players[i].score < state.players[match_winner].score:
+					match_winner = i
+	else:
+		state.players[winner].score += total
+		over = mode == RuleProfile.ScoringMode.SINGLE_ROUND or state.players[winner].score >= state.profile.target_score
+	return {"winner": winner, "points": total, "per_seat": per_seat, "match_over": over, "match_winner": match_winner}

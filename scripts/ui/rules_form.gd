@@ -44,7 +44,7 @@ func _header(key: String, color: Color) -> void:
 
 func _build() -> void:
 	_header("RULES_CLASSIC_SECTION", Palette.ELECTRIC)
-	var mode := Segmented.new([_t("RULES_MODE_SINGLE"), _t("RULES_MODE_POINTS")], profile.scoring_mode, 130)
+	var mode := Segmented.new([_t("RULES_MODE_SINGLE"), _t("RULES_MODE_POINTS"), _t("RULES_MODE_LOW")], profile.scoring_mode, 110, 16)
 	mode.changed.connect(func(i):
 		profile.scoring_mode = i
 		_emit())

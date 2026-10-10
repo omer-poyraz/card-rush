@@ -4,7 +4,11 @@ extends RefCounted
 ## basic rules (see docs/GAME_RULES.md). Anything listed in HOUSE_RULE_KEYS is
 ## NOT part of the classic rules and is shown to players as a house rule.
 
-enum ScoringMode { SINGLE_ROUND, POINTS }
+## SINGLE_ROUND: first out wins. POINTS: winner collects opponents' card points,
+## first to target wins. LOW_TALLY (official "alternative scoring"): everyone
+## keeps a running total of their OWN leftover points; when someone reaches the
+## target the LOWEST total wins.
+enum ScoringMode { SINGLE_ROUND, POINTS, LOW_TALLY }
 ## How a Wild Draw Four is policed.
 ##  CHALLENGE (official): it may be played as a bluff; the victim can challenge.
 ##  STRICT: the engine refuses it while the player holds a card of the active colour.

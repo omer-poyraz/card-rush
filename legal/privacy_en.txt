@@ -1,0 +1,24 @@
+CARD RUSH — PRIVACY POLICY (DRAFT)
+Version: draft 0.1 · Developer: Poyraz Yazılım
+This text is a draft and must be legally reviewed before publication.
+
+1. Data collected
+Card Rush does not require an account. Your player name, avatar, settings and game statistics are stored only on your device and are not sent to the developer.
+
+2. Online play (not yet active)
+When multiplayer is added, player name, avatar number and game moves will be shared directly between the hosting device and the joining devices. This section will be updated when the feature ships.
+
+3. Voice chat (not yet active)
+When voice chat is added, the microphone will be used only while you switch it on, audio will not be recorded and will be sent only to players in the same room. No audio is sent while the microphone is off.
+
+4. Ads (not yet active)
+When ads are enabled, Google AdMob will be used. AdMob may process device identifiers and ad interaction data under Google's policies. Where required, ads are shown only after your consent.
+
+5. Purchases (not yet active)
+Purchases are made through Google Play or the App Store; your payment details are not shared with us.
+
+6. Children
+Card Rush does not knowingly collect personal data from children under 13.
+
+7. Contact
+[contact address to be added before release]

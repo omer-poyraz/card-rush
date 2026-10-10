@@ -470,3 +470,28 @@ func test_state_serialisation_round_trip() -> void:
 	eq(copy.pending_draw, 4)
 	eq(copy.challenge, s.challenge)
 	eq(copy.players[1].hand, s.players[1].hand)
+
+
+func test_low_tally_alternative_scoring() -> void:
+	var prof := RuleProfile.classic()
+	prof.scoring_mode = RuleProfile.ScoringMode.LOW_TALLY
+	prof.target_score = 60
+	# player 0 goes out; players keep their own leftovers: P1 = 2+50 = 52, P2 = 9
+	var s := Rig.state([["R1"], ["Y2", "W"], ["G9"]], "R5", -1, [], prof)
+	ok(Rig.play(s, 0, "R1"))
+	eq(s.phase, P.ROUND_OVER, "nobody reached 60 yet")
+	eq(s.players[1].score, 52)
+	eq(s.players[2].score, 9)
+	eq(s.players[0].score, 0)
+	# next round: push player 1 over the target; the LOWEST total wins
+	s.players[1].score = 55
+	s.players[2].score = 20
+	s.players[0].score = 30
+	var s2 := Rig.state([["B1", "W+4"], ["R3"], ["Y4", "Y5"]], "R5", -1, [], prof, 1)
+	for i in 3:
+		s2.players[i].score = s.players[i].score
+	ok(Rig.play(s2, 1, "R3"))
+	eq(s2.phase, P.MATCH_OVER, "player 0 passed the target")
+	eq(s2.players[0].score, 30 + 51)
+	eq(s2.players[2].score, 20 + 9)
+	eq(s2.match_winner, 2, "lowest running total (29) wins, not the player who went out (55)")

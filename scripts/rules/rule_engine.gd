@@ -533,8 +533,8 @@ static func _end_round(state: GameState, winner: int, ev: Array) -> void:
 	ev.append({"t": "round_end", "winner": winner, "points": r["points"], "per_seat": r["per_seat"], "scores": scores})
 	if r["match_over"]:
 		state.phase = Phase.MATCH_OVER
-		state.match_winner = winner
-		ev.append({"t": "match_end", "winner": winner})
+		state.match_winner = int(r["match_winner"])
+		ev.append({"t": "match_end", "winner": state.match_winner})
 	else:
 		state.phase = Phase.ROUND_OVER
 

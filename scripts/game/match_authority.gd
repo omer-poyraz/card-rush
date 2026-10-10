@@ -22,11 +22,28 @@ var bots := {}                 # seat -> BotController (permanent bots and takeo
 var takeover := {}             # seat -> true while a bot plays for a disconnected human
 var bot_takeover_enabled := true
 var time_scale := 1.0          # tests use small values
-var paused := false
+var bot_think_scale := 1.0     # "bot speed" setting
+var paused := false:
+	set(v):
+		if v == paused:
+			return
+		paused = v
+		if v:
+			_paused_at = now_ms()
+		else:
+			# shift every timer by the paused duration
+			var d := now_ms() - _paused_at
+			for j in _jobs:
+				j["at"] += d
+			if _turn_deadline_ms > 0:
+				_turn_deadline_ms += d
+			_hold_until_ms += d
+var _paused_at := 0
 var auto_next_round := true
 
 var _jobs: Array = []          # {at: msec, fn: Callable, key: String}
 var _turn_deadline_ms := 0
+var _hold_until_ms := 0
 var _log_actions := false
 
 
@@ -42,8 +59,15 @@ func setup(profile: RuleProfile, players: Array[PlayerState], kinds: Array[int],
 
 
 func start() -> void:
+	_hold_for_deal()
 	var ev := RuleEngine.start_round(state)
 	_publish(ev)
+
+
+## Gives clients time to play the deal animation before the first bot move.
+func _hold_for_deal() -> void:
+	var n := state.players.size() * state.profile.hand_size
+	_hold_until_ms = now_ms() + int((1200 + n * 40) * time_scale)
 
 
 func now_ms() -> int:
@@ -86,6 +110,7 @@ func start_next_round() -> void:
 	if state.phase != GameState.Phase.ROUND_OVER:
 		return
 	_cancel("next_round")
+	_hold_for_deal()
 	var ev := RuleEngine.start_round(state)
 	_publish(ev)
 
@@ -97,18 +122,32 @@ func is_bot_seat(seat: int) -> bool:
 # --- publishing ---------------------------------------------------------------------
 
 func _publish(events: Array) -> void:
+	_schedule()  # first, so the published views carry the fresh turn deadline
+	var left := turn_time_left_ms()
 	for i in state.players.size():
 		var red := RuleEngine.redact_events(events, i)
 		if bots.has(i):
 			bots[i].observe(red)
-		published.emit(i, state.view_for(i), red)
-	published.emit(-1, state.view_for(-1), RuleEngine.redact_events(events, -1))
+		published.emit(i, _view(i, left), red)
+	published.emit(-1, _view(-1, left), RuleEngine.redact_events(events, -1))
 	for e in events:
 		if e["t"] == "round_end":
 			round_finished.emit(int(e["winner"]))
 		elif e["t"] == "match_end":
 			match_finished.emit(int(e["winner"]))
-	_schedule()
+
+
+func _view(seat: int, turn_left: int) -> Dictionary:
+	var v := state.view_for(seat)
+	v["turn_ms_left"] = turn_left
+	v["turn_ms_total"] = state.profile.turn_time_s * 1000
+	v["takeover"] = takeover.keys()
+	return v
+
+
+## Fresh view for a (re)connecting seat.
+func view_for(seat: int) -> Dictionary:
+	return _view(seat, turn_time_left_ms())
 
 
 # --- scheduling ---------------------------------------------------------------------
@@ -167,11 +206,12 @@ func _schedule() -> void:
 	# current player's turn
 	var cur := state.current
 	if bots.has(cur):
-		var delay: float = bots[cur].think_time()
+		var delay: float = bots[cur].think_time() * bot_think_scale
 		if takeover.has(cur):
 			delay += 1.0
 		if state.uno_vulnerable >= 0 and _has_humans():
 			delay = maxf(delay, HUMAN_CATCH_GRACE_S)
+		delay = maxf(delay, (_hold_until_ms - now_ms()) / 1000.0 / maxf(time_scale, 0.001))
 		_after(delay, "bot_turn", func(): _bot_turn(cur, version))
 		_turn_deadline_ms = 0
 	else:
@@ -189,8 +229,9 @@ func _arm_turn_timer(seat: int, serial: int) -> void:
 	if _jobs.any(func(j): return j["key"] == "turn_timeout") and _turn_serial_armed == serial:
 		return
 	_turn_serial_armed = serial
-	_turn_deadline_ms = now_ms() + limit * 1000
-	_after(limit, "turn_timeout", func(): _timeout(seat, serial))
+	var hold := maxi(0, _hold_until_ms - now_ms())
+	_turn_deadline_ms = now_ms() + hold + limit * 1000
+	_after(limit + hold / 1000.0, "turn_timeout", func(): _timeout(seat, serial))
 
 
 var _turn_serial_armed := -1

@@ -15,9 +15,19 @@ func _ready() -> void:
 	var i := args.find("--only")
 	if i >= 0 and i + 1 < args.size():
 		only = args[i + 1]
+	# never touch the player's real save
+	var saved_data := Save.data.duplicate(true)
+	Save.path = "user://test_save.json"
+	Save.backup_path = "user://test_save.bak.json"
+	Save.data = Save.defaults()
+	App.capture_mode = true
 	for dir in DIRS:
 		for f in _list(dir):
 			await _run_file(f, only)
+	Save._dirty = false
+	Save.data = saved_data
+	Save.path = Save.PATH
+	Save.backup_path = Save.BACKUP
 	_report()
 	var failed := results.filter(func(r): return not r[2]).size()
 	print("\n%d tests, %d failed" % [results.size(), failed])

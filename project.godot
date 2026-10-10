@@ -19,6 +19,14 @@ boot_splash/bg_color=Color(0.039, 0.043, 0.11, 1)
 boot_splash/show_image=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+Save="*res://scripts/persistence/save_manager.gd"
+Settings="*res://scripts/core/settings_manager.gd"
+Loc="*res://scripts/localization/localization_manager.gd"
+Audio="*res://scripts/core/audio_manager.gd"
+App="*res://scripts/core/app.gd"
+
 [display]
 
 window/size/viewport_width=1280
@@ -31,6 +39,7 @@ window/handheld/orientation=4
 
 [internationalization]
 
+locale/translations=PackedStringArray("res://data/localization/strings.tr.translation", "res://data/localization/strings.en.translation")
 locale/fallback="en"
 
 [physics]

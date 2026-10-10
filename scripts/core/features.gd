@@ -6,8 +6,8 @@ extends RefCounted
 const AVAILABLE := {
 	"quick_play": true,
 	"bots": true,
-	"create_room": false,
-	"join_room": false,
+	"create_room": true,
+	"join_room": true,
 	"friends": false,
 	"profile": true,
 	"collection": false,

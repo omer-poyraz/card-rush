@@ -21,6 +21,11 @@ var seat_kinds: Array[int] = []
 var bots := {}                 # seat -> BotController (permanent bots and takeovers)
 var takeover := {}             # seat -> true while a bot plays for a disconnected human
 var bot_takeover_enabled := true
+## Seconds a disconnected player's seat is held before the policy applies.
+var disconnect_grace_s := 20.0
+## After the grace period: a temporary bot plays the seat (true) or the seat
+## only takes automatic timeout moves (draw/pass/accept) (false).
+var _dc_since := {}            # seat -> msec when it disconnected
 var time_scale := 1.0          # tests use small values
 var bot_think_scale := 1.0     # "bot speed" setting
 var paused := false:
@@ -93,17 +98,36 @@ func submit(seat: int, action: Dictionary) -> Dictionary:
 
 
 func set_connected(seat: int, connected: bool) -> void:
-	if seat < 0 or seat >= state.players.size():
+	if seat < 0 or seat >= state.players.size() or state.players[seat].connected == connected:
 		return
 	state.players[seat].connected = connected
-	if not connected and bot_takeover_enabled and not bots.has(seat):
-		bots[seat] = BotController.new(BotController.Level.NORMAL, seat)
-		takeover[seat] = true
-	elif connected and takeover.has(seat):
-		bots.erase(seat)
-		takeover.erase(seat)
+	if connected:
+		_dc_since.erase(seat)
+		_cancel("dc_%d" % seat)
+		if takeover.has(seat):
+			bots.erase(seat)
+			takeover.erase(seat)
+	else:
+		_dc_since[seat] = now_ms()
+		if disconnect_grace_s <= 0.0:
+			_grace_expired(seat)
 	state.version += 1
 	_publish([{"t": "connection", "p": seat, "connected": connected}])
+
+
+func _grace_expired(seat: int) -> void:
+	if state.players[seat].connected or bots.has(seat):
+		return
+	if bot_takeover_enabled:
+		var b := BotController.new(BotController.Level.NORMAL, seat)
+		bots[seat] = b
+		takeover[seat] = true
+	if state.phase < GameState.Phase.ROUND_OVER:
+		_schedule()
+
+
+func is_disconnected_waiting(seat: int) -> bool:
+	return _dc_since.has(seat) and not bots.has(seat)
 
 
 func start_next_round() -> void:
@@ -214,6 +238,15 @@ func _schedule() -> void:
 		delay = maxf(delay, (_hold_until_ms - now_ms()) / 1000.0 / maxf(time_scale, 0.001))
 		_after(delay, "bot_turn", func(): _bot_turn(cur, version))
 		_turn_deadline_ms = 0
+	elif is_disconnected_waiting(cur):
+		# hold the seat for the grace period, then apply the policy
+		_cancel("bot_turn")
+		var left := disconnect_grace_s - (now_ms() - int(_dc_since[cur])) / 1000.0
+		if bot_takeover_enabled:
+			_after(maxf(left, 0.0), "dc_%d" % cur, func(): _grace_expired(cur))
+		else:
+			_after(maxf(left, 0.0), "dc_%d" % cur, func():
+				_timeout(cur, serial))
 	else:
 		_cancel("bot_turn")
 		_arm_turn_timer(cur, serial)

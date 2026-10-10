@@ -26,6 +26,7 @@ Settings="*res://scripts/core/settings_manager.gd"
 Loc="*res://scripts/localization/localization_manager.gd"
 Audio="*res://scripts/core/audio_manager.gd"
 App="*res://scripts/core/app.gd"
+Net="*res://scripts/networking/network_manager.gd"
 
 [display]
 

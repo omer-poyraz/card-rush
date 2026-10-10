@@ -137,6 +137,7 @@ func bind(c: MatchClient) -> void:
 	client.updated.connect(_on_update)
 	client.action_rejected.connect(_on_rejected)
 	client.connection_changed.connect(_on_connection)
+	client.flush()
 
 
 # --- layout ---------------------------------------------------------------------------
@@ -750,10 +751,11 @@ func _overlay_panel(kind: String, title_text: String, width := 560.0) -> VBoxCon
 	var t := UiKit.title(title_text, 30)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t)
-	p.set_anchors_preset(Control.PRESET_CENTER)
+	p.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
 	p.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	p.grow_vertical = Control.GROW_DIRECTION_BOTH
-	p.position.y -= 40
+	p.offset_top -= 40
+	p.offset_bottom -= 40
 	p.pivot_offset = p.get_combined_minimum_size() / 2.0
 	p.scale = Vector2(0.85, 0.85)
 	p.create_tween().tween_property(p, "scale", Vector2.ONE, _dur(0.2)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -815,7 +817,8 @@ func _show_challenge(v: Dictionary) -> void:
 
 func _show_target_picker(cb: Callable) -> void:
 	var v := _overlay_panel("target", tr("TABLE_PICK_TARGET"), 480)
-	v.get_parent().set_anchors_preset(Control.PRESET_CENTER_TOP)
+	var panel: Control = v.get_parent()
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 70)
 	var cancel := UiKit.button(tr("BTN_CANCEL"), UiKit.Variant.GHOST, Vector2(200, 50))
 	cancel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	cancel.pressed.connect(_close_overlay)

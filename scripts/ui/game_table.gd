@@ -21,8 +21,8 @@ func _ready() -> void:
 	match str(params.get("mode", "offline")):
 		"online":
 			client = params.get("client")
-			if client.get_parent() == null:
-				add_child(client)
+			if Net.client:
+				Net.client.state_changed.connect(_on_room_state)
 		_:
 			_start_offline()
 	table.back_style = str(Save.section("cosmetics").get("equipped", {}).get("back", "back_classic"))
@@ -31,8 +31,6 @@ func _ready() -> void:
 	table.match_over.connect(_on_match_over)
 	if authority:
 		authority.start()
-	elif client.last_view.size() > 0:
-		table._on_update(client.last_view, [])
 
 
 func _start_offline() -> void:
@@ -107,7 +105,10 @@ func _open_pause() -> void:
 	settings.pressed.connect(func(): SettingsDialog.open())
 	rules.pressed.connect(func(): HelpDialog.open())
 	leave.pressed.connect(func():
-		Dialogs.message(tr("LEAVE_CONFIRM_TITLE"), tr("LEAVE_CONFIRM_BODY"), [
+		var body := tr("LEAVE_CONFIRM_BODY")
+		if _online():
+			body = tr("LOBBY_LEAVE_HOST_BODY") if Net.host else tr("LEAVE_CONFIRM_ONLINE_BODY")
+		Dialogs.message(tr("LEAVE_CONFIRM_TITLE"), body, [
 			[tr("BTN_CANCEL"), UiKit.Variant.SECONDARY, null],
 			[tr("PAUSE_LEAVE"), UiKit.Variant.DANGER, func():
 				_pause_host.close()
@@ -133,7 +134,33 @@ func _on_match_over(v: Dictionary, _events: Array) -> void:
 			"cards_played": st["cards_played"], "uno_calls": st["uno_calls"], "catches": st["catches"],
 			"online": str(params.get("mode", "")) == "online", "points": int(v["players"][me]["score"]),
 		})
-	RoundResultPanel.open_match(v, client.seat, xp, _rematch, func(): _leave(false), str(params.get("mode", "offline")) == "offline")
+	if _online():
+		RoundResultPanel.open_match(v, client.seat, xp, _back_to_lobby, func(): _leave(false), true, "RESULT_LOBBY")
+	else:
+		RoundResultPanel.open_match(v, client.seat, xp, _rematch, func(): _leave(false), true)
+
+
+func _online() -> bool:
+	return str(params.get("mode", "offline")) == "online"
+
+
+func _back_to_lobby() -> void:
+	client.unbind()
+	if Net.host:
+		Net.host.end_match()
+	if Net.is_active():
+		App.goto("lobby", {"action": "room"})
+	else:
+		App.goto("menu")
+
+
+func _on_room_state(s: String, detail: String) -> void:
+	if s in ["closed", "failed"] and is_inside_tree():
+		var msg := tr("LOBBY_KICKED") if detail == "kicked" else (Loc.error_text(detail) if detail.begins_with("ERR_") else tr("LOBBY_ROOM_CLOSED"))
+		App.toast(msg, Palette.CORAL, 4.0)
+		DisplayServer.screen_set_keep_on(false)
+		Net.leave_room()
+		App.goto("menu")
 
 
 func _rematch() -> void:
@@ -141,12 +168,19 @@ func _rematch() -> void:
 
 
 func _leave(forfeit: bool) -> void:
-	if forfeit and not _recorded and authority and not authority.state.is_over():
+	if forfeit and not _recorded and not table.view.is_empty() and int(table.view.get("phase", 0)) < GameState.Phase.MATCH_OVER:
 		_recorded = true
-		Progression.record_match({"won": false, "players": authority.state.players.size(), "bot_level": 1,
-			"cards_played": table.stats()["cards_played"], "online": false})
-	client.leave()
+		Progression.record_match({"won": false, "players": table.view["players"].size(), "bot_level": 1,
+			"cards_played": table.stats()["cards_played"], "online": _online()})
 	DisplayServer.screen_set_keep_on(false)
+	if _online():
+		if forfeit:
+			Net.leave_room()
+			App.goto("menu")
+		else:
+			_back_to_lobby()
+		return
+	client.leave()
 	App.goto(str(params.get("return_to", "menu")))
 
 

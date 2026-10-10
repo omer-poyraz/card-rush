@@ -76,6 +76,7 @@ func take_view(id: int) -> CardView:
 	if not views.has(id):
 		return null
 	var cv: CardView = views[id]
+	_kill_tween(cv)
 	views.erase(id)
 	order.erase(id)
 	if selected == id:
@@ -156,8 +157,10 @@ func layout(animated := true) -> void:
 			lift += LIFT_HOVER
 		target.y -= lift
 		cv.z_index = i
+		_kill_tween(cv)
 		if animated and is_inside_tree():
 			var tw := cv.create_tween().set_parallel()
+			cv.set_meta("layout_tw", tw)
 			tw.tween_property(cv, "position", target, 0.22 * k).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 			tw.tween_property(cv, "rotation", slots[i][1], 0.22 * k)
 			tw.tween_property(cv, "scale", Vector2.ONE, 0.18 * k)
@@ -165,6 +168,16 @@ func layout(animated := true) -> void:
 			cv.position = target
 			cv.rotation = slots[i][1]
 	queue_redraw()
+
+
+## A running layout tween must never keep moving a card after it left the hand
+## (it would write hand-local coordinates into the card's new parent).
+func _kill_tween(cv: CardView) -> void:
+	if cv.has_meta("layout_tw"):
+		var tw: Tween = cv.get_meta("layout_tw")
+		if tw and tw.is_valid():
+			tw.kill()
+		cv.remove_meta("layout_tw")
 
 
 func _card_at(local: Vector2) -> int:

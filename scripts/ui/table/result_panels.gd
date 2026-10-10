@@ -71,7 +71,7 @@ static func open(table: TableView, v: Dictionary, e: Dictionary, me: int, client
 
 
 ## Final match result. buttons: rematch / menu callables.
-static func open_match(v: Dictionary, me: int, xp_info: Dictionary, on_rematch: Callable, on_menu: Callable, can_rematch: bool) -> Control:
+static func open_match(v: Dictionary, me: int, xp_info: Dictionary, on_rematch: Callable, on_menu: Callable, can_rematch: bool, rematch_key := "RESULT_REMATCH") -> Control:
 	var winner := int(v["match_winner"])
 	var won := winner == me
 	var title_text: String = TranslationServer.translate("RESULT_YOU_WIN") if won else Loc.t("RESULT_WINNER", [str(v["players"][winner]["name"])])
@@ -121,7 +121,7 @@ static func open_match(v: Dictionary, me: int, xp_info: Dictionary, on_rematch: 
 		on_menu.call())
 	row.add_child(menu)
 	if can_rematch:
-		var again := UiKit.button(TranslationServer.translate("RESULT_REMATCH"), UiKit.Variant.ACCENT, Vector2(260, 64))
+		var again := UiKit.button(TranslationServer.translate(rematch_key), UiKit.Variant.ACCENT, Vector2(260, 64))
 		again.pressed.connect(func():
 			host.close()
 			on_rematch.call())

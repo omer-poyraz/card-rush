@@ -43,6 +43,19 @@ ERR_NAME_BLOCKED,Bu isim kullanılamaz.,That name isn't allowed.
 ERR_NAME_SHORT,İsim en az 3 karakter olmalı.,Names need at least 3 characters.
 ERR_NEED_COLOR,Önce bir renk seç.,Pick a colour first.
 ERR_NEED_TARGET,El değiştireceğin oyuncuyu seç.,Choose a player to swap with.
+ERR_NET_BAD_CODE,Oda kodu yanlış.,Wrong room code.
+ERR_NET_BAD_CODE_FORMAT,Oda kodu 6 karakter olmalı.,Room codes have 6 characters.
+ERR_NET_BAD_IP,Geçerli bir IP adresi gir (ör. 192.168.1.20).,Enter a valid IP address (e.g. 192.168.1.20).
+ERR_NET_HOST_FAILED,Oda kurulamadı. Ağ bağlantını kontrol et.,Couldn't create the room. Check your network connection.
+ERR_NET_HOST_GONE,Oda sahibine ulaşılamıyor; oda kapanmış olabilir.,The host can't be reached; the room may have closed.
+ERR_NET_IN_MATCH,Odada maç sürüyor; bitince katılabilirsin.,A match is in progress; you can join when it ends.
+ERR_NET_JOIN_FAILED,Odaya bağlanılamadı. Aynı ağda olduğunuzdan ve adresin doğru olduğundan emin ol.,Couldn't connect to the room. Make sure you're on the same network and the address is correct.
+ERR_NET_NOT_CONNECTED,Bağlantı yok; hamle gönderilemedi.,Not connected; the move wasn't sent.
+ERR_NET_NOT_READY,Tüm oyuncuların hazır olması bekleniyor.,Waiting for all players to be ready.
+ERR_NET_PORT_BUSY,Oyun portu kullanımda. Başka bir uygulama portu kullanıyor olabilir.,The game port is in use. Another app may be using it.
+ERR_NET_RATE_LIMIT,Çok hızlı! Hamleni tekrar dene.,Too fast! Try your move again.
+ERR_NET_ROOM_FULL,Oda dolu.,The room is full.
+ERR_NET_VERSION,Oyun sürümleri uyuşmuyor. Herkes Card Rush'ı güncellemeli.,Game versions don't match. Everyone should update Card Rush.
 ERR_NOTHING_TO_ACCEPT,Bekleyen bir ceza yok.,There is no pending penalty.
 ERR_NOT_CATCHABLE,Bu oyuncu yakalanamaz.,That player can't be caught.
 ERR_NOT_IN_PLAY,El bitti; yeni hamle kabul edilmiyor.,The hand is over; no more moves.
@@ -200,7 +213,59 @@ HOUSE_STACK_DRAW_TWO_TIP,+2 gelen oyuncu +2 atarak cezayı aktarabilir.,A player
 HOUSE_STACK_MIXED,Karışık zincir (+2/+4),Mixed stacking (+2/+4)
 HOUSE_STACK_MIXED_TIP,+2 üstüne +4 ve seçilen renkte +4 üstüne +2.,"+4 on +2, and +2 on +4 in the chosen colour."
 LEAVE_CONFIRM_BODY,Maçtan çıkarsan bu maç kayıp sayılır.,"If you leave, this match counts as a loss."
+LEAVE_CONFIRM_ONLINE_BODY,Maçtan çıkarsan koltuğunu bir bot devralır ve maç kayıp sayılır.,"If you leave, a bot takes your seat and the match counts as a loss."
 LEAVE_CONFIRM_TITLE,Maçtan çıkılsın mı?,Leave the match?
+LOBBY_ADD_BOT,Bot ekle:,Add bot:
+LOBBY_BOT_N,Bot (%s),Bot (%s)
+LOBBY_BY_CODE,Oda koduyla katıl,Join with a room code
+LOBBY_BY_IP,IP adresiyle bağlan,Connect by IP address
+LOBBY_BY_IP_NOTE,Oda sahibinin ekranında yazan adresi gir (kod da gerekir). İnternet üzerinden yalnızca port yönlendirme veya ortak bir VPN ile çalışır.,Enter the address shown on the host's screen (the code is also required). Over the internet this only works with port forwarding or a shared VPN.
+LOBBY_CODE_COPIED,Oda kodu kopyalandı,Room code copied
+LOBBY_CODE_NOT_FOUND,Bu kodla yakında bir oda bulunamadı. Aynı Wi-Fi'da olduğundan emin ol ya da IP ile bağlan.,No nearby room with this code. Make sure you're on the same Wi-Fi or connect by IP.
+LOBBY_CONNECTING,Bağlanılıyor…,Connecting…
+LOBBY_CONNECT_IP,Bağlan,Connect
+LOBBY_CREATE,Odayı Kur,Create Room
+LOBBY_DEFAULT_ROOM_NAME,%s'in Masası,%s's Table
+LOBBY_DISCOVERY_UNAVAILABLE,Bu cihazda yakındaki odalar taranamıyor. IP adresiyle katılabilirsin.,Nearby rooms can't be scanned on this device. You can join by IP address.
+LOBBY_EMPTY_SEAT,— boş koltuk —,— empty seat —
+LOBBY_ENTER_CODE_PRIVATE,Bu oda özel: sağ taraftan oda kodunu gir.,This room is private: enter the room code on the right.
+LOBBY_HOST_IP,Bu cihazın adresi: %s (port %d),This device's address: %s (port %d)
+LOBBY_INVITE_NOTE,Kodu arkadaşına ilet. Davet bağlantısı (cardrush://) henüz desteklenmiyor.,Share the code with your friend. Invite links (cardrush://) are not supported yet.
+LOBBY_IN_MATCH,Maç sürüyor,Match in progress
+LOBBY_IP_NEEDS_CODE,IP ile bağlanmak için oda kodunu da gir.,Enter the room code too when connecting by IP.
+LOBBY_JOIN,Katıl,Join
+LOBBY_JOINED,%s odaya katıldı,%s joined
+LOBBY_KICK,Odadan çıkar,Kick
+LOBBY_KICKED,Oda sahibi seni odadan çıkardı.,The host removed you from the room.
+LOBBY_LAN_NOTE,Yerel ağ (aynı Wi-Fi) · İnternet üzerinden oda sonraki sürümde,Local network (same Wi-Fi) · Internet rooms in a later version
+LOBBY_LEAVE,Ayrıl,Leave
+LOBBY_LEAVE_BODY,Odadan ayrılırsan aynı kodla yeniden katılabilirsin.,You can rejoin later with the same code.
+LOBBY_LEAVE_HOST_BODY,Oda sahibisin: ayrılırsan oda herkes için kapanır ve süren maç biter.,You are the host: leaving closes the room for everyone and ends any match.
+LOBBY_LEAVE_TITLE,Odadan ayrıl?,Leave the room?
+LOBBY_LEFT,%s odadan ayrıldı,%s left
+LOBBY_MAX_PLAYERS,En fazla oyuncu (botlar dahil),Max players (bots included)
+LOBBY_NEARBY,Yakındaki odalar,Nearby rooms
+LOBBY_NOT_READY,Hazır değilim,Not Ready
+LOBBY_PLAYERS,Oyuncular,Players
+LOBBY_PRIVATE,Özel (kodla),Private (code)
+LOBBY_PRIVATE_NOTE,Oda yakındaki listesinde kilitli görünür; katılmak için oda kodu gerekir. Kodun kendisi ağda yayınlanmaz.,The room shows as locked in nearby rooms; the room code is required to join. The code itself is never broadcast.
+LOBBY_PUBLIC,Herkese açık,Public
+LOBBY_PUBLIC_NOTE,Aynı ağdaki herkes odayı görüp doğrudan katılabilir.,Anyone on the same network can see the room and join directly.
+LOBBY_READY,Hazırım,I'm Ready
+LOBBY_READY_STATE,HAZIR,READY
+LOBBY_REJOIN,Son odaya yeniden bağlan,Rejoin last room
+LOBBY_REMOVE_BOT,Botu kaldır,Remove bot
+LOBBY_ROOM_CLOSED,Oda kapandı.,The room was closed.
+LOBBY_ROOM_CODE,Oda kodu,Room code
+LOBBY_ROOM_NAME,Oda adı,Room name
+LOBBY_ROOM_SUB,Kurucu: %s · %d/%d oyuncu,Host: %s · %d/%d players
+LOBBY_RULES,Kurallar,Rules
+LOBBY_SEARCHING,Aynı Wi-Fi ağındaki odalar aranıyor… Oda görünmüyorsa kodla ya da IP adresiyle katılmayı dene.,"Looking for rooms on this Wi-Fi… If a room doesn't show up, join by code or by IP address."
+LOBBY_START,Maçı Başlat,Start Match
+LOBBY_VISIBILITY,Görünürlük,Visibility
+LOBBY_VOICE,Sesli sohbet (yakında),Voice chat (coming soon)
+LOBBY_WAITING_ROOM,Bekleme Odası,Waiting Room
+LOBBY_WAITING_STATE,BEKLİYOR,WAITING
 MENU_BOTS,Botlara Karşı,Play vs Bots
 MENU_BOTS_SUB,"2–10 oyuncu, zorluk ve kurallar senin seçimin","2–10 players, your difficulty and rules"
 MENU_COLLECTION,Koleksiyon,Collection
@@ -208,6 +273,7 @@ MENU_CREATE_ROOM,Oda Kur,Create Room
 MENU_FRIENDS,Arkadaşlar,Friends
 MENU_HELP,Kurallar,Rules
 MENU_JOIN_ROOM,Odaya Katıl,Join Room
+MENU_LAN_READY,Aynı Wi-Fi'da arkadaşlarınla oda kurabilirsin,Create rooms with friends on the same Wi-Fi
 MENU_MISSIONS,Görevler,Missions
 MENU_OFFLINE_READY,Botlarla oyun internet gerektirmez,Bot games work without internet
 MENU_PROFILE,Profil,Profile
@@ -215,6 +281,7 @@ MENU_QUICK_PLAY,Hızlı Oyna,Quick Play
 MENU_QUICK_PLAY_SUB,3 bota karşı tek el · çevrim dışı,One hand vs 3 bots · offline
 MENU_SETTINGS,Ayarlar,Settings
 MENU_STORE,Mağaza,Store
+NET_RECONNECTING,"Bağlantı koptu, yeniden bağlanılıyor…","Connection lost, reconnecting…"
 PAUSE_LEAVE,Maçtan Çık,Leave Match
 PAUSE_ONLINE_NOTE,Çevrim içi maçlar duraklatılamaz; sıra sana gelirse süre işlemeye devam eder.,Online matches can't be paused; your turn timer keeps running.
 PAUSE_RESUME,Devam Et,Resume
@@ -235,6 +302,7 @@ QUIT_BODY,Card Rush kapatılsın mı?,Close Card Rush?
 QUIT_TITLE,Oyundan çık?,Quit the game?
 RESULT_CARDS_LEFT,%d kart · %d puan,%d cards · %d pts
 RESULT_LEVEL_UP,Seviye atladın! Seviye %d,Level up! Level %d
+RESULT_LOBBY,Lobiye Dön,Back to Lobby
 RESULT_MENU,Ana Menü,Main Menu
 RESULT_NEXT_IN,Sonraki el %d sn içinde,Next hand in %ds
 RESULT_NEXT_ROUND,Sonraki El,Next Hand

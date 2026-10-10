@@ -156,6 +156,7 @@ func test_authority_bot_takeover_on_disconnect() -> void:
 	var players := Rig.players(3)
 	var kinds: Array[int] = [MatchAuthority.SeatKind.LOCAL, MatchAuthority.SeatKind.BOT, MatchAuthority.SeatKind.BOT]
 	auth.setup(RuleProfile.classic(), players, kinds, 2)
+	auth.disconnect_grace_s = 0.0
 	auth.start()
 	check(not auth.is_bot_seat(0))
 	auth.set_connected(0, false)
@@ -177,4 +178,30 @@ func test_authority_runs_real_time_bot_match() -> void:
 		await frames(1)
 	check(auth.state.is_over(), "real-time bot match finished")
 	eq(auth.state.check_integrity(), "")
+	auth.queue_free()
+
+
+func test_disconnect_grace_holds_seat_then_bot() -> void:
+	var auth := MatchAuthority.new()
+	var players := Rig.players(3)
+	var kinds: Array[int] = [MatchAuthority.SeatKind.LOCAL, MatchAuthority.SeatKind.REMOTE, MatchAuthority.SeatKind.BOT]
+	auth.setup(RuleProfile.classic(), players, kinds, 0)
+	auth.disconnect_grace_s = 0.4
+	runner.add_child(auth)
+	auth.start()
+	# make it seat 1's turn in a plain playing phase
+	auth.state.current = 1
+	auth.state.phase = GameState.Phase.PLAYING
+	auth.state.pending_draw = 0
+	auth.state.challenge = {}
+	if auth.state.current_color == CardDefinition.CardColor.WILD:
+		auth.state.current_color = CardDefinition.CardColor.RED
+	auth.set_connected(1, false)
+	check(not auth.is_bot_seat(1), "seat held during grace")
+	await wait(0.15)
+	eq(auth.state.current, 1, "game waits for the disconnected player")
+	await wait(0.6)
+	check(auth.is_bot_seat(1), "temporary bot took over after the grace period")
+	auth.set_connected(1, true)
+	check(not auth.is_bot_seat(1), "reconnected human regains the seat")
 	auth.queue_free()

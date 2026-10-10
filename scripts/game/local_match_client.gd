@@ -4,6 +4,7 @@ extends MatchClient
 ## exact same submit/validate/publish path as online play.
 
 var authority: MatchAuthority
+var pausable := true
 
 
 func attach(auth: MatchAuthority, my_seat: int) -> void:
@@ -24,7 +25,7 @@ func send(action: Dictionary) -> void:
 
 
 func can_pause() -> bool:
-	return true
+	return pausable
 
 
 func set_paused(p: bool) -> void:

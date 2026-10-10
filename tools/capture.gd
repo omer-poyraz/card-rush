@@ -27,6 +27,8 @@ func _ready() -> void:
 		Loc.set_language(args["lang"])
 	if args.has("colorblind"):
 		Settings.set_value("colorblind", true)
+	if args.has("reduced"):
+		Settings.set_value("animation", 1)
 	if args.has("quality"):
 		Settings.set_value("quality", int(args["quality"]))
 	var scene: String = args.get("scene", "menu")
@@ -53,6 +55,17 @@ func _ready() -> void:
 			HelpDialog.open(int(args.get("tab", "0")))
 		_:
 			get_tree().change_scene_to_file(App.SCENES.get(scene, scene))
+	if args.has("challenge"):
+		# force a +4 challenge prompt for the local seat (UI check)
+		await get_tree().create_timer(3.5).timeout
+		var gt := get_tree().current_scene
+		var auth: MatchAuthority = gt.authority
+		auth.paused = true
+		auth.state.current = 0
+		auth.state.phase = GameState.Phase.CHALLENGE_DECISION
+		auth.state.pending_draw = 4
+		auth.state.challenge = {"offender": 1, "color_before": 0, "guilty": false}
+		auth._publish([])
 	await get_tree().create_timer(float(args.get("wait", "2.0"))).timeout
 	var img := get_viewport().get_texture().get_image()
 	var out: String = args.get("out", "/tmp/card_rush_capture.png")

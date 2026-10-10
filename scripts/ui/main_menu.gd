@@ -133,7 +133,7 @@ func _build() -> void:
 	var ver := UiKit.label("Card Rush v%s" % ProjectSettings.get_setting("application/config/version"), 16, Palette.TEXT_MUTED)
 	foot.add_child(ver)
 	foot.add_child(UiKit.spacer())
-	var mode := UiKit.label(tr("MENU_OFFLINE_READY"), 16, Palette.TEXT_MUTED)
+	var mode := UiKit.label(tr("MENU_OFFLINE_READY") + "  ·  " + tr("MENU_LAN_READY"), 16, Palette.TEXT_MUTED)
 	foot.add_child(mode)
 
 

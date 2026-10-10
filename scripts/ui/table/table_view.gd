@@ -125,6 +125,7 @@ func _ready() -> void:
 	add_child(voice_bar)
 
 	fx = Control.new()
+	fx.z_index = 40  # flying cards above the table and the hand
 	fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(fx)
@@ -541,6 +542,7 @@ func _fly_to_discard(cid: int, from: Vector2, _face: bool, rot: float, existing:
 	piles.add_child(cv)
 	cv.global_position = gp
 	cv.set_meta("off", off)
+	cv.z_index = 0  # newest card is the last child -> always drawn on top
 	cv.selected = false
 	cv.playable = false
 	cv.dim = false
@@ -755,6 +757,7 @@ func _overlay_panel(kind: String, title_text: String, width := 560.0) -> VBoxCon
 	host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	host.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	host.set_meta("kind", kind)
+	host.z_index = 60  # prompts above every card, including lifted hand cards
 	add_child(host)
 	move_child(host, fx.get_index())
 	var p := UiKit.panel()

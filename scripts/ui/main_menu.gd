@@ -12,17 +12,10 @@ func _ready() -> void:
 		_add_floating_cards()
 	_build()
 	Audio.play_music("music_menu")
-	Ads.show_banner()
 	Loc.locale_changed.connect(_rebuild)
 	if Save.recovered_from != "":
 		App.toast(tr("SAVE_RECOVERED"), Palette.SUN, 4.0)
 		Save.recovered_from = ""
-
-
-func _on_banner(_v: bool) -> void:
-	for c in get_children():
-		if c is MarginContainer and c.has_meta("menu_ui"):
-			c.add_theme_constant_override("margin_bottom", 28 + Ads.banner_reserve())
 
 
 func _rebuild() -> void:
@@ -70,9 +63,6 @@ func _build() -> void:
 		root.add_theme_constant_override("margin_" + side, 28)
 	root.add_theme_constant_override("margin_left", 44)
 	root.add_theme_constant_override("margin_right", 44)
-	root.add_theme_constant_override("margin_bottom", 28 + Ads.banner_reserve())
-	if not Ads.banner_state_changed.is_connected(_on_banner):
-		Ads.banner_state_changed.connect(_on_banner)
 	_mark(root)
 	var col := UiKit.vbox(10)
 	root.add_child(col)

@@ -77,6 +77,7 @@ func take_view(id: int) -> CardView:
 		return null
 	var cv: CardView = views[id]
 	_kill_tween(cv)
+	cv.z_index = 0  # the hand's fan order must not follow the card to the table
 	views.erase(id)
 	order.erase(id)
 	if selected == id:

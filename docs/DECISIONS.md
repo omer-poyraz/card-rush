@@ -62,4 +62,6 @@ Her karar: bağlam → karar → sonuç. Yeni kararlar sona eklenir.
 
 **D-30 Kozmetik birleşik katalog.** `data/cosmetics/catalog.json`: kaynak = varsayılan/jeton/seviye/premium/paket. Sahiplik kaybolursa (iade) varsayılana döner.
 
-**D-31 Banner alanı gerçek yükseklikten.** Emülatör testinde sabit pay yetersiz çıktı; `AdView.get_height_in_pixels()` tuval birimine çevrilerek menü alt boşluğu ayarlanır.
+**D-31 Banner kaldırıldı.** Sahip isteğiyle (butonları kapatıyordu) banner reklam hiç istenmiyor; geçiş + ödüllü kaldı. Test: `test_no_banner_ever_requested`.
+
+**D-32 Kart çizim sırası.** El yelpazesinin `z_index` değeri karta masada kalıyordu (eski kartlar üstte, pencerelerin üstünde). Kart elden çıkınca 0'a sıfırlanır; pencereler z 60, uçan kartlar z 40. Test: `test_ui_smoke` yığın sırası kontrolü.

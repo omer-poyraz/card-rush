@@ -16,7 +16,6 @@ var _recorded := false
 func _ready() -> void:
 	params = App.params.duplicate(true)
 	DisplayServer.screen_set_keep_on(true)
-	Ads.hide_banner()  # never over the cards
 	table = TableView.new()
 	add_child(table)
 	match str(params.get("mode", "offline")):

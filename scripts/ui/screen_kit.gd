@@ -1,8 +1,6 @@
 class_name ScreenKit
 extends RefCounted
-## Common frame for menu screens: back button, title, coin balance and a
-## bottom margin that grows while a banner ad is visible (so the banner never
-## covers buttons).
+## Common frame for menu screens: back button, title and coin balance.
 
 
 ## Builds the frame inside `screen` and returns [content_vbox, coin_label].
@@ -12,13 +10,7 @@ static func frame(screen: Control, title_key: String, on_back: Callable, show_co
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "right", "top"]:
 		margin.add_theme_constant_override("margin_" + side, 24)
-	var apply_banner := func(_v := false):
-		margin.add_theme_constant_override("margin_bottom", 20 + Ads.banner_reserve())
-	apply_banner.call()
-	Ads.banner_state_changed.connect(apply_banner)
-	screen.tree_exiting.connect(func():
-		if Ads.banner_state_changed.is_connected(apply_banner):
-			Ads.banner_state_changed.disconnect(apply_banner))
+	margin.add_theme_constant_override("margin_bottom", 20)
 	screen.add_child(margin)
 	var col := UiKit.vbox(14)
 	margin.add_child(col)
@@ -45,5 +37,4 @@ static func frame(screen: Control, title_key: String, on_back: Callable, show_co
 		h.add_child(coin_label)
 		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		top.add_child(chip)
-	Ads.show_banner()
 	return [col, coin_label]

@@ -48,6 +48,17 @@ func test_full_match_through_table_ui() -> void:
 	check(tv.is_idle(), "UI drained its event queue")
 	eq(tv.view.get("version", -1), auth.state.version, "UI ended on the authoritative snapshot")
 	eq(tv.hand.order.size(), auth.state.players[0].hand.size(), "hand matches state")
+	# discard pile draw order: no card keeps the hand's z_index, newest on top
+	for dv in tv.discard_views:
+		eq(dv.z_index, 0, "discard card z_index")
+	if not tv.discard_views.is_empty():
+		var top: CardView = tv.discard_views.back()
+		eq(top.card_id, auth.state.discard_pile.back(), "top card shown last")
+		var last_card := -1
+		for c in tv.piles.get_children():
+			if c is CardView and tv.discard_views.has(c):
+				last_card = c.card_id
+		eq(last_card, top.card_id, "top card is drawn above the older discards")
 	for c in App.get_children():
 		if c is CanvasLayer:
 			for m in c.get_children():

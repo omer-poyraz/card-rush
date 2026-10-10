@@ -3,11 +3,11 @@
 ## Reklam (AdMob)
 - Eklenti: Poing Studios Godot AdMob 5.1.0 (MIT, `addons/admob`). Android'de gerçek SDK; iOS'ta ikili var ama yayın öncesi iOS AdMob uygulaması gerekir.
 - Kimlikler `scripts/ads/ad_config.gd` (`AdConfig`): uygulama `ca-app-pub-8602764456287198~3978960722` (ayrıca `project.godot [admob]`), banner `/1754278757`, geçiş `/6357712051`, ödüllü `/9441197085`. Bunlar herkese açık kimliklerdir, gizli değil.
-- **Debug derlemeler her zaman Google test birimlerini kullanır** (`card_rush/ads/use_production_in_debug` bilerek açılmadıkça). Gerçek reklamlara tıklamayın.
+- **Release derlemeler gerçek birimleri kullanır** (telefon testi: `Android APK (phone test)` preset'i release + debug anahtarıyla imzalı → `export/android/CardRush-phone.apk`, günlükte `test_units=false` doğrulandı). **Debug derlemeler her zaman Google test birimlerini kullanır** (`card_rush/ads/use_production_in_debug` bilerek açılmadıkça). Gerçek reklamlara tıklamayın.
 - iOS: `PROD_IOS` boş → iOS sürümünde de test birimleri. AdMob konsolunda iOS uygulaması + birimleri oluşturup `PROD_IOS` ve `project.godot` `admob/general/ios/app_id` doldurulmalı.
 - Arka uçlar: `admob` (Android/iOS + eklenti), `none` (Windows/masaüstü: reklam yok, hata yok), `mock` (yalnızca debug `--mock-ads` / `CARDRUSH_MOCK_ADS=1` ve testler; gerçek reklam değildir).
 - İzin: Google UMP onay formu açılışta (gerekli bölgelerde); Ayarlar'da "Reklam gizlilik seçenekleri" (gerekliyse).
-- Yerleşim: banner yalnızca menü ekranlarında; menüler banner'ın **gerçek yüksekliği** kadar alt boşluk bırakır. Maç masasında banner yok.
+- **Banner kullanılmıyor** (sahip kararı, 2026-10-10: alttaki butonları kapatıyordu). Yalnızca geçiş ve ödüllü reklam. Banner birimi `/1754278757` AdConfig'de yorum olarak duruyor.
 - Geçiş: yalnızca maç sonucu ekranından çıkarken; ilk 2 maçtan önce yok, en az 2 maçta bir ve 150 sn aralıkla; yüklü değilse beklemeden devam.
 - Ödüllü: isteğe bağlı, yalnızca reklam gerçekten yüklüyse teklif edilir, günlük 10 sınırı; ödül **yalnızca SDK ödül geri çağrısında**, benzersiz anahtarla bir kez (kapama ödül değildir). Ödül kozmetik jetondur.
 - Premium: tüm reklam istekleri durur (yalnızca gizleme değil; `destroy_all`).

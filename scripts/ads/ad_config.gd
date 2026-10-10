@@ -8,8 +8,9 @@ extends RefCounted
 
 # AdMob app (Android). Also set in project.godot [admob] for the manifest.
 const APP_ID_ANDROID := "ca-app-pub-8602764456287198~3978960722"
+# Banner unit ca-app-pub-8602764456287198/1754278757 exists but banners are
+# not used (owner decision).
 const PROD := {
-	"banner": "ca-app-pub-8602764456287198/1754278757",
 	"interstitial": "ca-app-pub-8602764456287198/6357712051",
 	"rewarded": "ca-app-pub-8602764456287198/9441197085",
 }
@@ -19,12 +20,10 @@ const PROD_IOS := {}
 
 # Google's documented test units (safe to click, never generate revenue).
 const TEST_ANDROID := {
-	"banner": "ca-app-pub-3940256099942544/9214589741",
 	"interstitial": "ca-app-pub-3940256099942544/1033173712",
 	"rewarded": "ca-app-pub-3940256099942544/5224354917",
 }
 const TEST_IOS := {
-	"banner": "ca-app-pub-3940256099942544/2435281174",
 	"interstitial": "ca-app-pub-3940256099942544/4411468910",
 	"rewarded": "ca-app-pub-3940256099942544/1712485313",
 }

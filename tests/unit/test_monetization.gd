@@ -48,11 +48,9 @@ func test_no_sdk_platform_is_safe() -> void:
 	Ads.use_backend(AdsBackend.new())
 	var done := [false, false]
 	Ads.start(func(): done[0] = true)
-	Ads.show_banner()
 	Ads.maybe_show_interstitial(func(): done[1] = true)
 	check(done[0] and done[1], "callbacks still run without an SDK")
 	check(not Ads.can_offer_rewarded(), "no rewarded offers without SDK")
-	eq(Ads.banner_reserve(), 0)
 	var got := [null]
 	Ads.show_rewarded("x", 30, func(g): got[0] = g)
 	eq(got[0], false)
@@ -114,7 +112,6 @@ func test_premium_blocks_ad_requests() -> void:
 	var m := MockAds.new()
 	Ads.use_backend(m)
 	Ads.start(func(): pass)
-	Ads.show_banner()
 	for i in 5:
 		Ads.on_match_completed()
 	Ads.maybe_show_interstitial(func(): pass)
@@ -125,12 +122,19 @@ func test_premium_blocks_ad_requests() -> void:
 
 func test_buying_premium_stops_running_ads() -> void:
 	var m := _mock_ads()
-	Ads.show_banner()
-	check(m.banner_visible, "banner shown before premium")
+	check(Ads.can_offer_rewarded(), "rewarded ready before premium")
 	var store := _mock_store()
 	Store.purchase("cardrush_premium")
-	check(not m.banner_visible, "banner destroyed after purchase")
-	check(not Ads.can_offer_rewarded())
+	check(not Ads.can_offer_rewarded(), "loaded ads dropped after purchase")
+	check(not m.interstitial_ready(), "interstitial destroyed")
+
+
+func test_no_banner_ever_requested() -> void:
+	var m := _mock_ads()
+	for i in 5:
+		Ads.on_match_completed()
+	Ads.maybe_show_interstitial(func(): pass)
+	eq(m.loads["banner"], 0, "banners are not used")
 
 
 # --- purchases ------------------------------------------------------------------------------

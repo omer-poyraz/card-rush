@@ -74,6 +74,15 @@ func _ready() -> void:
 		auth.state.challenge = {"offender": 1, "color_before": 0, "guilty": false}
 		auth._publish([])
 	await get_tree().create_timer(float(args.get("wait", "2.0"))).timeout
+	if args.has("dump") and get_tree().current_scene and get_tree().current_scene.get("authority"):
+		var gt := get_tree().current_scene
+		var st: GameState = gt.authority.state
+		var tv: TableView = gt.table
+		var names := []
+		for c in tv.piles.get_children():
+			if c is CardView and tv.discard_views.has(c):
+				names.append("%s(z%d)" % [st.card(c.card_id).short_name(), c.z_index])
+		print("DUMP state_top=%s color=%d felt_color=%d piles_order=%s busy=%s" % [st.top_card().short_name(), st.current_color, tv.felt.active_color, names, not tv.is_idle()])
 	var img := get_viewport().get_texture().get_image()
 	var out: String = args.get("out", "/tmp/card_rush_capture.png")
 	img.save_png(out)

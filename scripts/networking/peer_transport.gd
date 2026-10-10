@@ -59,7 +59,7 @@ func send(to_id: int, msg: Dictionary, reliable := true) -> void:
 	if peer == null or peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
 		return
 	peer.transfer_mode = MultiplayerPeer.TRANSFER_MODE_RELIABLE if reliable else MultiplayerPeer.TRANSFER_MODE_UNRELIABLE
-	peer.transfer_channel = 0 if reliable else 1
+	peer.transfer_channel = 0  # default channel; the transfer mode picks reliable/unreliable
 	peer.set_target_peer(to_id)
 	peer.put_packet(NetProtocol.encode(msg))
 

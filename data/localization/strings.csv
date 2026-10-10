@@ -55,7 +55,14 @@ ERR_NET_NOT_READY,Tüm oyuncuların hazır olması bekleniyor.,Waiting for all p
 ERR_NET_PORT_BUSY,Oyun portu kullanımda. Başka bir uygulama portu kullanıyor olabilir.,The game port is in use. Another app may be using it.
 ERR_NET_RATE_LIMIT,Çok hızlı! Hamleni tekrar dene.,Too fast! Try your move again.
 ERR_NET_ROOM_FULL,Oda dolu.,The room is full.
+ERR_NET_SIGNAL_BAD_REQUEST,Bağlantı sunucusu isteği reddetti.,The connection server rejected the request.
+ERR_NET_SIGNAL_CLOSED,Bağlantı sunucusu bağlantıyı kapattı.,The connection server closed the connection.
+ERR_NET_SIGNAL_FULL,Oda dolu.,The room is full.
+ERR_NET_SIGNAL_NO_ROOM,Bu kodla açık bir oda bulunamadı.,No open room with this code.
+ERR_NET_SIGNAL_ROOM_TAKEN,"Oda kodu çakıştı, lütfen tekrar dene.","Room code clash, please try again."
+ERR_NET_SIGNAL_UNREACHABLE,Bağlantı sunucusuna ulaşılamadı. İnternet bağlantını kontrol et.,Couldn't reach the connection server. Check your internet connection.
 ERR_NET_VERSION,Oyun sürümleri uyuşmuyor. Herkes Card Rush'ı güncellemeli.,Game versions don't match. Everyone should update Card Rush.
+ERR_NET_WEBRTC_TIMEOUT,Cihazlar arasında doğrudan bağlantı kurulamadı (ağ engeli). Bir aktarıcı (TURN) sunucusu yapılandırılmamış olabilir; yerel ağ veya farklı bir ağ dene.,A direct connection between the devices couldn't be made (network restrictions). A relay (TURN) server may not be configured; try the local network or another network.
 ERR_NOTHING_TO_ACCEPT,Bekleyen bir ceza yok.,There is no pending penalty.
 ERR_NOT_CATCHABLE,Bu oyuncu yakalanamaz.,That player can't be caught.
 ERR_NOT_IN_PLAY,El bitti; yeni hamle kabul edilmiyor.,The hand is over; no more moves.
@@ -221,15 +228,21 @@ LOBBY_BY_CODE,Oda koduyla katıl,Join with a room code
 LOBBY_BY_IP,IP adresiyle bağlan,Connect by IP address
 LOBBY_BY_IP_NOTE,Oda sahibinin ekranında yazan adresi gir (kod da gerekir). İnternet üzerinden yalnızca port yönlendirme veya ortak bir VPN ile çalışır.,Enter the address shown on the host's screen (the code is also required). Over the internet this only works with port forwarding or a shared VPN.
 LOBBY_CODE_COPIED,Oda kodu kopyalandı,Room code copied
-LOBBY_CODE_NOT_FOUND,Bu kodla yakında bir oda bulunamadı. Aynı Wi-Fi'da olduğundan emin ol ya da IP ile bağlan.,No nearby room with this code. Make sure you're on the same Wi-Fi or connect by IP.
+LOBBY_CODE_NOT_FOUND,Bu kodla yakında bir oda bulunamadı. Aynı Wi-Fi'da olduğundan emin ol ya da IP ile bağlan. (İnternet odaları için bağlantı sunucusu yapılandırılmamış.),No nearby room with this code. Make sure you're on the same Wi-Fi or connect by IP. (No connection server is configured for internet rooms.)
 LOBBY_CONNECTING,Bağlanılıyor…,Connecting…
+LOBBY_CONNECTION,Bağlantı,Connection
 LOBBY_CONNECT_IP,Bağlan,Connect
+LOBBY_CONN_INTERNET,İnternet,Internet
+LOBBY_CONN_INTERNET_NOTE,Arkadaşların farklı ağlardan oda koduyla katılır. Bağlantı kurulduktan sonra veriler doğrudan cihazlar arasında akar.,"Friends join from other networks with the room code. Once connected, data flows directly between devices."
+LOBBY_CONN_LAN,Yerel ağ,Local network
+LOBBY_CONN_LAN_NOTE,Aynı Wi-Fi'daki oyuncular odayı bulup kodla katılır. Sunucu gerekmez.,Players on the same Wi-Fi find the room and join with the code. No server needed.
 LOBBY_CREATE,Odayı Kur,Create Room
 LOBBY_DEFAULT_ROOM_NAME,Masa · %s,%s's Table
 LOBBY_DISCOVERY_UNAVAILABLE,Bu cihazda yakındaki odalar taranamıyor. IP adresiyle katılabilirsin.,Nearby rooms can't be scanned on this device. You can join by IP address.
 LOBBY_EMPTY_SEAT,— boş koltuk —,— empty seat —
 LOBBY_ENTER_CODE_PRIVATE,Bu oda özel: sağ taraftan oda kodunu gir.,This room is private: enter the room code on the right.
 LOBBY_HOST_IP,Bu cihazın adresi: %s (port %d),This device's address: %s (port %d)
+LOBBY_INTERNET_ROOM,İnternet odası: arkadaşların “Odaya Katıl” ekranında bu kodu girmeli.,Internet room: friends enter this code on the “Join Room” screen.
 LOBBY_INVITE_NOTE,Kodu arkadaşına ilet. Davet bağlantısı (cardrush://) henüz desteklenmiyor.,Share the code with your friend. Invite links (cardrush://) are not supported yet.
 LOBBY_IN_MATCH,Maç sürüyor,Match in progress
 LOBBY_IP_NEEDS_CODE,IP ile bağlanmak için oda kodunu da gir.,Enter the room code too when connecting by IP.
@@ -237,7 +250,7 @@ LOBBY_JOIN,Katıl,Join
 LOBBY_JOINED,%s odaya katıldı,%s joined
 LOBBY_KICK,Odadan çıkar,Kick
 LOBBY_KICKED,Oda sahibi seni odadan çıkardı.,The host removed you from the room.
-LOBBY_LAN_NOTE,Yerel ağ (aynı Wi-Fi) veya IP ile bağlantı,Local network (same Wi-Fi) or direct IP
+LOBBY_LAN_NOTE,"Yerel ağ, IP veya internet (sunucu yapılandırıldıysa)","Local network, IP or internet (when a server is configured)"
 LOBBY_LEAVE,Ayrıl,Leave
 LOBBY_LEAVE_BODY,Odadan ayrılırsan aynı kodla yeniden katılabilirsin.,You can rejoin later with the same code.
 LOBBY_LEAVE_HOST_BODY,Oda sahibisin: ayrılırsan oda herkes için kapanır ve süren maç biter.,You are the host: leaving closes the room for everyone and ends any match.
@@ -284,6 +297,8 @@ MENU_QUICK_PLAY,Hızlı Oyna,Quick Play
 MENU_QUICK_PLAY_SUB,3 bota karşı tek el · çevrim dışı,One hand vs 3 bots · offline
 MENU_SETTINGS,Ayarlar,Settings
 MENU_STORE,Mağaza,Store
+NET_INTERNET_NOT_CONFIGURED,İnternet odaları için bir bağlantı sunucusu yapılandırılmamış. Şimdilik yerel ağ veya IP ile oynayabilirsin.,No connection server is configured for internet rooms yet. You can play on the local network or by IP.
+NET_INTERNET_UNSUPPORTED,Bu cihazda internet bağlantısı (WebRTC) desteklenmiyor. Yerel ağ veya IP ile oynayabilirsin.,Internet play (WebRTC) isn't supported on this device. You can play on the local network or by IP.
 NET_RECONNECTING,"Bağlantı koptu, yeniden bağlanılıyor…","Connection lost, reconnecting…"
 PAUSE_LEAVE,Maçtan Çık,Leave Match
 PAUSE_ONLINE_NOTE,Çevrim içi maçlar duraklatılamaz; sıra sana gelirse süre işlemeye devam eder.,Online matches can't be paused; your turn timer keeps running.
@@ -347,6 +362,7 @@ SETTINGS_LICENSES,Lisanslar,Licenses
 SETTINGS_MUSIC,Müzik,Music
 SETTINGS_NOTIFICATIONS,Bildirimler,Notifications
 SETTINGS_ONE_TAP,Tek dokunuşla kart oyna,Play a card with one tap
+SETTINGS_ONLINE,Çevrim içi (gelişmiş),Online (advanced)
 SETTINGS_PREMIUM_STATUS_NONE,Premium: etkin değil,Premium: not active
 SETTINGS_PRIVACY,Gizlilik,Privacy
 SETTINGS_PRIVACY_NOTE,Card Rush hesap açtırmaz ve profilin yalnızca bu cihazda saklanır. Reklam ve izin seçenekleri reklam sistemi etkinleştirildiğinde burada görünecek.,Card Rush needs no account and your profile is stored only on this device. Ad and consent options will appear here once ads are enabled.
@@ -354,6 +370,7 @@ SETTINGS_PRIVACY_POLICY,Gizlilik Politikası,Privacy Policy
 SETTINGS_QUALITY,Görsel kalite,Visual quality
 SETTINGS_SFX,Efektler,Effects
 SETTINGS_SHAKE,Ekran sarsıntısı,Screen shake
+SETTINGS_SIGNALING_NOTE,İnternet odaları için bağlantı sunucusu adresi. Boş bırakırsan oyunun varsayılanı kullanılır. Kendi sunucunu kurduysan buraya yaz.,Connection server address for internet rooms. Leave empty for the game's default. Enter your own server if you host one.
 SETTINGS_SOUND,Ses,Sound
 SETTINGS_TERMS,Kullanım Koşulları,Terms of Use
 SETTINGS_TITLE,Ayarlar,Settings

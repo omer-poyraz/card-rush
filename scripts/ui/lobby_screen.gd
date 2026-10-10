@@ -80,6 +80,21 @@ func _show_create() -> void:
 	h1.add_child(l1)
 	var maxp := Segmented.Stepper.new(int(saved.get("max_players", 4)), 2, 10)
 	h1.add_child(maxp)
+	lv.add_child(UiKit.label(tr("LOBBY_CONNECTION"), 19, Palette.TEXT, 700))
+	var conn := Segmented.new([tr("LOBBY_CONN_LAN"), tr("LOBBY_CONN_INTERNET")], 1 if saved.get("internet", false) and Net.internet_unavailable_reason() == "" else 0, 150)
+	lv.add_child(conn)
+	var conn_note := UiKit.label("", 15, Palette.TEXT_DIM, 600)
+	conn_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lv.add_child(conn_note)
+	var upd_conn := func(i):
+		var why := Net.internet_unavailable_reason()
+		if i == 1 and why != "":
+			conn.set_index(0)
+			conn_note.text = tr(why)
+		else:
+			conn_note.text = tr("LOBBY_CONN_INTERNET_NOTE" if i == 1 else "LOBBY_CONN_LAN_NOTE")
+	upd_conn.call(conn.index)
+	conn.changed.connect(upd_conn)
 	lv.add_child(UiKit.label(tr("LOBBY_VISIBILITY"), 19, Palette.TEXT, 700))
 	var vis := Segmented.new([tr("LOBBY_PRIVATE"), tr("LOBBY_PUBLIC")], 1 if saved.get("public", false) else 0, 150)
 	lv.add_child(vis)
@@ -124,7 +139,24 @@ func _show_create() -> void:
 		var s := Save.section("room_setup")
 		for k in ["name", "max_players", "public", "rules", "voice"]:
 			s[k] = settings[k]
+		s["internet"] = conn.index == 1
 		Save.mark_dirty()
+		if conn.index == 1:
+			settings["public"] = false
+			create.disabled = true
+			_status.add_theme_color_override("font_color", Palette.SUN)
+			_status.text = tr("LOBBY_CONNECTING")
+			Net.create_internet_room(settings, func(err: String):
+				if not is_inside_tree():
+					return
+				create.disabled = false
+				if err != "":
+					_status.add_theme_color_override("font_color", Palette.CORAL)
+					_status.text = Loc.error_text(err)
+					return
+				Audio.play("join")
+				_show_room())
+			return
 		var err := Net.create_room(settings)
 		if err != "":
 			_status.text = Loc.error_text(err)
@@ -197,6 +229,7 @@ func _show_join() -> void:
 	var last: Dictionary = Save.section("net").get("last", {})
 	if not last.is_empty() and int(Time.get_unix_time_from_system()) - int(last.get("t", 0)) < 3600:
 		var rejoin := UiKit.button(tr("LOBBY_REJOIN"), UiKit.Variant.SUCCESS, Vector2(0, 54))
+		rejoin.visible = str(last.get("address", "")) != ""
 		rejoin.pressed.connect(func(): _connect(str(last["address"]), int(last["port"]), str(last["code"]), str(last.get("token", ""))))
 		rv.add_child(rejoin)
 	rv.add_child(UiKit.spacer())
@@ -253,10 +286,13 @@ func _join_by_code() -> void:
 		_status.text = tr("ERR_NET_BAD_CODE_FORMAT")
 		return
 	var r := Net.discovery.find_by_code(code)
-	if r.is_empty():
-		_status.text = tr("LOBBY_CODE_NOT_FOUND")
+	if not r.is_empty():
+		_connect(r["ip"], int(r["port"]), code)
 		return
-	_connect(r["ip"], int(r["port"]), code)
+	if Net.internet_unavailable_reason() == "":
+		_connect("internet", 0, code)
+		return
+	_status.text = tr("LOBBY_CODE_NOT_FOUND")
 
 
 func _join_by_ip() -> void:
@@ -285,7 +321,7 @@ func _connect(address: String, port: int, code: String, token := "") -> void:
 	if _status:
 		_status.text = tr("LOBBY_CONNECTING")
 	Net.discovery.stop()
-	var c := Net.join_room(address, port, code)
+	var c := Net.join_internet_room(code) if address == "internet" else Net.join_room(address, port, code)
 	if token != "":
 		c.token = token
 	c.state_changed.connect(_on_join_state)
@@ -368,7 +404,11 @@ func _show_room() -> void:
 		DisplayServer.clipboard_set(code)
 		App.toast(tr("LOBBY_CODE_COPIED"), Palette.SUCCESS))
 	code_row.add_child(copy)
-	if Net.host:
+	if Net.internet:
+		var il := UiKit.label(tr("LOBBY_INTERNET_ROOM"), 15, Palette.TEAL, 700)
+		il.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		rv.add_child(il)
+	elif Net.host:
 		var ips := ENetAdapter.local_ipv4()
 		var ip_text := Loc.t("LOBBY_HOST_IP", [", ".join(ips) if not ips.is_empty() else "-", NetProtocol.GAME_PORT])
 		var ipl := UiKit.label(ip_text, 15, Palette.TEXT_DIM, 650)

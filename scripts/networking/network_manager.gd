@@ -14,6 +14,7 @@ var host: RoomHost
 var client: RoomClient
 var discovery: LanDiscovery
 var host_port := NetProtocol.GAME_PORT
+var internet := false        # current room uses the internet (WebRTC) adapter
 
 
 func _ready() -> void:
@@ -28,10 +29,66 @@ func is_active() -> bool:
 ## Creates a LAN/direct room. Returns "" or an error key.
 func create_room(settings: Dictionary, fixed_code := "") -> String:
 	leave_room()
+	internet = false
 	var r := ENetAdapter.host(host_port)
 	if not r["ok"]:
 		return r["error"]
 	return _start_host(r["transport"], settings, fixed_code)
+
+
+# --- internet (WebRTC + signaling) -----------------------------------------------------
+
+## Signaling server URL: project setting (release) or a local override (dev/self-host).
+func signaling_url() -> String:
+	var o := str(Save.section("net").get("signaling_url", ""))
+	if o != "":
+		return o
+	return str(ProjectSettings.get_setting("card_rush/online/signaling_url", ""))
+
+
+## "" when internet rooms can be used, otherwise the reason key.
+func internet_unavailable_reason() -> String:
+	if not WebRTCTransport.is_supported():
+		return "NET_INTERNET_UNSUPPORTED"
+	if signaling_url() == "":
+		return "NET_INTERNET_NOT_CONFIGURED"
+	return ""
+
+
+## Creates an internet room. Codes are random; a (rare) clash on the signaling
+## server is retried with a new code. Calls cb(err) when ready or failed.
+func create_internet_room(settings: Dictionary, cb: Callable, attempt := 0) -> void:
+	leave_room()
+	var reason := internet_unavailable_reason()
+	if reason != "":
+		cb.call(reason)
+		return
+	var code := RoomCode.generate()
+	var t := WebRTCTransport.new()
+	_start_host(t, settings, code)
+	internet = true
+	discovery.stop()  # internet rooms are not announced on the LAN
+	var done := [false]
+	t.sig_joined_once(func():
+		if not done[0]:
+			done[0] = true
+			cb.call(""))
+	t.setup_failed.connect(func(r: String):
+		if done[0]:
+			return
+		done[0] = true
+		if r == "ERR_NET_SIGNAL_ROOM_TAKEN" and attempt < 3:
+			create_internet_room(settings, cb, attempt + 1)
+		else:
+			leave_room()
+			cb.call(r))
+	t.start_host(signaling_url(), code)
+
+
+func join_internet_room(code: String) -> RoomClient:
+	var c := join_room("internet", 0, code)
+	internet = true
+	return c
 
 
 func _start_host(t: NetTransport, settings: Dictionary, fixed_code := "") -> String:
@@ -48,18 +105,20 @@ func _start_host(t: NetTransport, settings: Dictionary, fixed_code := "") -> Str
 	Voice.attach(VoiceConnection.for_host(host), bool(settings.get("voice", false)))
 	Voice.update_roster(host.roster())
 	mode = Mode.HOST
-	discovery.advertise(host.discovery_info(host_port))
+	if not (t is WebRTCTransport):
+		discovery.advertise(host.discovery_info(host_port))
 	room_changed.emit()
 	return ""
 
 
 func _refresh_ad() -> void:
-	if host:
+	if host and not internet:
 		discovery.update_ad(host.discovery_info(host_port))
 
 
 func join_room(address: String, port: int, code: String) -> RoomClient:
 	leave_room()
+	internet = false
 	var prof := Save.section("profile")
 	client = RoomClient.new()
 	add_child(client)
@@ -78,6 +137,12 @@ func join_room(address: String, port: int, code: String) -> RoomClient:
 		for m in lobby.get("members", []):
 			r[int(m["pid"])] = str(m["name"])
 		Voice.update_roster(r))
+	if address == "internet":
+		var url := signaling_url()
+		client.transport_factory = func(_a, _p):
+			var t := WebRTCTransport.new()
+			t.start_guest(url, code)
+			return t
 	client.join(address, port, code, str(prof.get("name", "Player")), int(prof.get("avatar", 0)))
 	room_changed.emit()
 	return client

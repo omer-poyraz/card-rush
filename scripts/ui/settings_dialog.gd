@@ -45,6 +45,20 @@ static func open() -> Control:
 	_toggle(body, "SETTINGS_COLORBLIND", "colorblind")
 	_toggle(body, "SETTINGS_HAPTICS", "haptics")
 
+	_section(body, "SETTINGS_ONLINE")
+	var on_note := UiKit.label(TranslationServer.translate("SETTINGS_SIGNALING_NOTE"), 16, Palette.TEXT_DIM, 600)
+	on_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_child(on_note)
+	var url_edit := LineEdit.new()
+	url_edit.placeholder_text = "wss://…/ws"
+	url_edit.text = str(Save.section("net").get("signaling_url", ""))
+	url_edit.text_changed.connect(func(t: String):
+		var clean := t.strip_edges()
+		if clean == "" or clean.begins_with("ws://") or clean.begins_with("wss://"):
+			Save.section("net")["signaling_url"] = clean
+			Save.mark_dirty())
+	body.add_child(url_edit)
+
 	_section(body, "SETTINGS_PRIVACY")
 	_toggle(body, "SETTINGS_NOTIFICATIONS", "notifications")
 	var priv := UiKit.label(TranslationServer.translate("SETTINGS_PRIVACY_NOTE"), 17, Palette.TEXT_DIM, 600)

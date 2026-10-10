@@ -29,6 +29,32 @@ func _ready() -> void:
 	Loc.set_language(args.get("lang", "tr"))
 	var port := int(args.get("port", "47820"))
 	var code: String = args.get("code", "ABCDEF")
+	if args.has("internet"):
+		Save.section("net")["signaling_url"] = args["internet"]
+		var codefile: String = args.get("codefile", "/tmp/cardrush_code.txt")
+		if args.get("role") == "host":
+			Net.create_internet_room({"name": "Net", "max_players": 3, "bots": [1], "voice": args.has("voice"), "rules": RuleProfile.classic().to_dict()}, func(err: String):
+				print("NETPEER host internet room: ", err if err != "" else Net.host.code)
+				if err == "":
+					var f := FileAccess.open(codefile, FileAccess.WRITE)
+					f.store_string(Net.host.code)
+					f.close()
+					Net.host.lobby_changed.connect(_host_lobby)
+					Net.host.match_started.connect(func(lc): _open_table(lc)))
+		else:
+			var t0 := Time.get_ticks_msec()
+			while not FileAccess.file_exists(codefile) and Time.get_ticks_msec() - t0 < 15000:
+				await get_tree().create_timer(0.2).timeout
+			var icode := FileAccess.get_file_as_string(codefile).strip_edges()
+			print("NETPEER client joining internet room ", icode)
+			var c := Net.join_internet_room(icode)
+			c.state_changed.connect(func(s, d):
+				print("NETPEER client state ", s, " ", d)
+				if s == "lobby":
+					c.set_ready(true))
+			c.match_starting.connect(func(mc, _r): _open_table(mc))
+		get_tree().create_timer(float(args.get("timeout", "90"))).timeout.connect(_finish.bind("timeout"))
+		return
 	if args.get("role") == "host":
 		Net.host_port = port
 		var err := Net.create_room({"name": "Test", "max_players": 3, "bots": [1], "voice": args.has("voice"), "rules": RuleProfile.classic().to_dict()}, code)

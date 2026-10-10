@@ -14,6 +14,7 @@ signal host_lost
 const HOST_ID := 1
 
 var is_server := false
+var last_error := ""         # error key of the last failure (for the UI)
 
 
 func send(_to_id: int, _msg: Dictionary, _reliable := true) -> void:

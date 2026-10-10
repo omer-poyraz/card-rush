@@ -79,7 +79,7 @@ func _on_connected() -> void:
 func _on_connection_failed() -> void:
 	if state == State.RECONNECTING:
 		return  # keep retrying until the window closes
-	_fail("ERR_NET_JOIN_FAILED")
+	_fail(transport.last_error if transport and transport.last_error != "" else "ERR_NET_JOIN_FAILED")
 
 
 func _on_host_lost() -> void:

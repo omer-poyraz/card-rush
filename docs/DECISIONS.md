@@ -53,3 +53,13 @@ Her karar: bağlam → karar → sonuç. Yeni kararlar sona eklenir.
 **D-25 Ses codec'i IMA-ADPCM.** Tüm platformlarda yerel eklenti gerektirmeyen saf GDScript; 64 kbit/sn konuşurken + VAD. Opus (TwoVoIP) ileride. AEC yok → kulaklık önerisi arayüzde.
 
 **D-26 webrtc-native kırpıldı.** Yalnızca Windows x86_64, Linux x86_64 (geliştirme/test), macOS, Android arm64/x86_64, iOS ikilileri tutuldu (~49 MB). Android armv7 için eklentide ikili yok.
+
+**D-27 Reklam/IAP eklentileri kardeş projeden.** Poing AdMob 5.1.0 ve GodotGooglePlayBilling 3.3.0 (MIT) aynı geliştiricinin diğer projesinde doğrulanmış sürümler; yeniden araştırmak yerine aynı sürümler kullanıldı.
+
+**D-28 Abonelikler yalnızca Android.** iOS'ta sunucu tarafı makbuz doğrulaması olmadan abonelik bitişi cihazda doğrulanamaz → kapalı; tek seferlik Premium her yerde.
+
+**D-29 Jeton satılmaz.** Jetonlar yalnızca oynayarak/görev/günlük ödül/ödüllü reklamla kazanılır, yalnızca kozmetik açar. Gerçek para ile yalnızca Premium ve kozmetik paket.
+
+**D-30 Kozmetik birleşik katalog.** `data/cosmetics/catalog.json`: kaynak = varsayılan/jeton/seviye/premium/paket. Sahiplik kaybolursa (iade) varsayılana döner.
+
+**D-31 Banner alanı gerçek yükseklikten.** Emülatör testinde sabit pay yetersiz çıktı; `AdView.get_height_in_pixels()` tuval birimine çevrilerek menü alt boşluğu ayarlanır.

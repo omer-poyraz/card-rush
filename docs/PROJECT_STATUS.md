@@ -1,6 +1,6 @@
 # Card Rush — Proje Durumu
 
-_Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 127/127 geçti (`tools/run_tests.sh`)_
+_Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 146/146 geçti (`tools/run_tests.sh`)_
 
 ## Aşama özeti
 | Aşama | Durum | Not |
@@ -11,9 +11,9 @@ _Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 127/127 geçti (`tools/r
 | 4 Premium arayüz ve animasyonlar | ✅ Büyük ölçüde | Dağıtma/çekme/oynama/ceza/yön/renk/UNO/itiraz animasyonları, sesler, sonuç ekranları, konfeti. Cila maddeleri TODO'da |
 | 5 Yerel ağ | ✅ Tamam | ENet LAN + doğrudan IP, keşif, oda kodu, lobi, yeniden bağlanma, bot devralma. 17 ağ testi + iki süreçli gerçek maç |
 | 6 İnternet + sesli sohbet | ✅ Kod tamam / 🟡 dağıtım | WebRTC + signaling (dev sunucu ile 3 süreçli maç testli); Cloudflare Worker yazıldı, **dağıtılmadı**. Sesli sohbet LAN/İnternet üzerinden çalışıyor (Linux'ta doğrulandı, mobilde test edilmedi) |
-| 7 Reklam + IAP | ⬜ | Kardeş projede doğrulanmış eklentiler mevcut (AdMob 5.1.0, Play Billing 3.3.0) |
-| 8 İlerleme, kozmetik | 🟡 Kısmi | XP/seviye/istatistik/geçmiş + profil çalışıyor; görevler, koleksiyon, mağaza yok |
-| 9 Test ve yayın | ⬜ | |
+| 7 Reklam + IAP | ✅ Kod / 🟡 mağaza | AdMob (Android emülatöründe gerçek test banner + ödüllü reklam doğrulandı), Play Billing bağlanıyor; ürünler mağazada oluşturulmadı, iOS eklentisi yok. Ortak reklam etkinliği |
+| 8 İlerleme, kozmetik | ✅ Tamam | XP/seviye, istatistik, günlük/haftalık görev, günlük giriş, jeton, koleksiyon (arka/masa/çerçeve), yerel arkadaş/engelleme |
+| 9 Test ve yayın | 🟡 Kısmi | Windows + Linux + Android APK üretildi; APK Android 15 emülatöründe oynandı. AAB anahtar, iOS macOS bekliyor (RELEASE_CHECKLIST) |
 
 ## Gerçekten çalışan (doğrulandı)
 - Çevrim dışı maç: Hızlı Oyna (3 bot, tek el) ve Botlara Karşı (2–10 oyuncu, zorluk, tüm kural seçenekleri).
@@ -23,10 +23,11 @@ _Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 127/127 geçti (`tools/r
 - Klavye kısayolları (Windows), Android geri tuşu, uygulama arka plana geçince çevrim dışı maçın duraklaması.
 
 ## Henüz yok / doğrulanmadı
-- Reklam, IAP, görevler, koleksiyon, mağaza, arkadaşlar (menüde "YAKINDA").
+- Mağaza ürünleri Play Console/App Store'da yok → fiyatlar "fiyat yok", gerçek satın alma test edilmedi. iOS satın alma eklentisi (macOS'ta derlenmeli) yok.
+- Küresel arkadaş listesi/davet/raporlama sunucusuz yapılamaz; yalnızca yerel son oyuncular + engelleme.
 - İnternet odaları için üretim signaling sunucusu dağıtılmadı (`server/signaling-worker/README.md`); `card_rush/online/signaling_url` boş → İnternet seçeneği gerekçesiyle kapalı.
 - Sesli sohbet ve ağ oyunu yalnızca Linux masaüstünde doğrulandı; Android/iOS/Windows cihaz testi yok.
-- Android/iOS/Windows dışa aktarımı henüz denenmedi (export_presets yok). Dokunmatik giriş gerçek cihazda test edilmedi (fare emülasyonu ile tasarlandı).
+- Gerçek Android telefon, iOS ve Windows'ta çalıştırılmadı (Android yalnızca emülatörde; emülatörün eski yazılım GL'i shader limitini aşıyor, ANGLE modunda sorunsuz).
 - "UNO" kelimesi marka riski taşıyor — D-12.
 
 ## Önemli dosyalar

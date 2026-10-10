@@ -7,14 +7,11 @@
 - [ ] Sesli sohbet: Opus (TwoVoIP, MIT) ile bant genişliği azaltma; bas-konuş seçeneği; mobil cihaz testleri
 - [ ] Davet bağlantısı (`cardrush://`) deep link
 
-## Aşama 7 — Reklam ve IAP
-- [ ] AdConfig (test/üretim ayrımı), AdManager, banner/geçiş/ödüllü, Premium reklam engeli, UMP onayı
-- [ ] PurchaseManager (Play Billing, StoreKit), geri yükleme, idempotent işleme
-- [ ] Ortak reklam etkinliği
-
-## Aşama 8 — İlerleme ve kozmetik
-- [ ] Günlük/haftalık görevler, günlük giriş ödülü, koleksiyon (kart arkaları hazır: 6 stil), masa temaları
-- [ ] Arkadaşlar: yerel son oyuncular + engelleme (sunucusuz sınırlar açıkça)
+## Aşama 7–8 kalanlar
+- [ ] Play Console / App Store Connect ürünleri; lisans test kullanıcısıyla gerçek satın alma testi
+- [ ] iOS: InAppStore eklentisini macOS'ta derle; AdMob iOS uygulaması ve birimleri
+- [ ] Sunucu tarafı makbuz doğrulaması (bütçe olursa)
+- [ ] Zafer animasyonu kozmetikleri, ses paketleri, avatar paketleri
 
 ## Aşama 4 cila
 - [ ] Rakip koltuklarda küçük yelpaze kart arkaları
@@ -22,6 +19,8 @@
 - [ ] Gerçek cihazda dokunmatik ve performans testi; düşük kalite modunda masa keçesi çizimini önbelleğe alma
 - [ ] Zafer animasyonları kozmetiği
 
-## Aşama 9
-- [ ] export_presets (Android AAB, iOS, Windows), ikon/splash, `legal/*.txt` dosyalarının export filtresine eklenmesi
-- [ ] Mağaza metinleri, veri güvenliği formu, gizlilik politikası yayını
+## Aşama 9 kalanlar (bkz. docs/RELEASE_CHECKLIST.md)
+- [ ] Paket kimliği ve "UNO" kelimesi kararları (kullanıcı)
+- [ ] Yükleme anahtarı ile AAB; macOS'ta iOS derlemesi; Windows'ta exe testi
+- [ ] Gerçek cihaz testleri (GPU çeşitliliği, düşük RAM, mikrofon, LAN keşfi)
+- [ ] Gizlilik politikasının yayınlanması, mağaza görselleri

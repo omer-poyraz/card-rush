@@ -40,7 +40,13 @@ func _start_host(t: NetTransport, settings: Dictionary, fixed_code := "") -> Str
 	add_child(host)
 	host.start(t, settings, str(prof.get("name", "Host")), int(prof.get("avatar", 0)), fixed_code)
 	host.lobby_changed.connect(_refresh_ad)
+	host.lobby_changed.connect(func():
+		if host:
+			Voice.set_room_enabled(bool(host.settings.get("voice", false)))
+			Voice.update_roster(host.roster()))
 	host.room_closed.connect(func(_r): _clear())
+	Voice.attach(VoiceConnection.for_host(host), bool(settings.get("voice", false)))
+	Voice.update_roster(host.roster())
 	mode = Mode.HOST
 	discovery.advertise(host.discovery_info(host_port))
 	room_changed.emit()
@@ -63,6 +69,15 @@ func join_room(address: String, port: int, code: String) -> RoomClient:
 			_remember_session()
 		elif s == "lobby":
 			_remember_session())
+	client.lobby_updated.connect(func(lobby: Dictionary):
+		if Voice.connection == null:
+			Voice.attach(VoiceConnection.for_client(client), bool(lobby.get("voice", false)))
+		else:
+			Voice.set_room_enabled(bool(lobby.get("voice", false)))
+		var r := {}
+		for m in lobby.get("members", []):
+			r[int(m["pid"])] = str(m["name"])
+		Voice.update_roster(r))
 	client.join(address, port, code, str(prof.get("name", "Player")), int(prof.get("avatar", 0)))
 	room_changed.emit()
 	return client
@@ -80,25 +95,39 @@ func _remember_session() -> void:
 	Save.mark_dirty()
 
 
+## Re-entrancy safe: references are cleared before anything can emit signals.
 func leave_room() -> void:
-	if host:
-		host.close("host_left")
-	if client:
-		client.leave()
-		var c := client
-		get_tree().create_timer(0.5).timeout.connect(func(): if is_instance_valid(c): c.queue_free())
+	var h := host
+	var c := client
 	_clear()
 	discovery.stop()
+	if h:
+		h.close("host_left")
+	if c:
+		c.leave()
+		get_tree().create_timer(0.5).timeout.connect(func(): if is_instance_valid(c): c.queue_free())
 
 
 func _clear() -> void:
+	var was_active := mode != Mode.NONE
 	host = null
 	client = null
 	mode = Mode.NONE
-	room_changed.emit()
+	Voice.detach()
+	if was_active:
+		room_changed.emit()
 
 
 ## The match client for this device in the running match (host or remote).
+## seat -> pid for the running match (to show who is speaking).
+func pid_of_seat() -> Dictionary:
+	if host:
+		return host.pid_of_seat
+	if client:
+		return client.pid_of_seat
+	return {}
+
+
 func match_client() -> MatchClient:
 	if host and host.local_client:
 		return host.local_client

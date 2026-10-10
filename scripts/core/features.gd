@@ -15,7 +15,7 @@ const AVAILABLE := {
 	"store": false,
 	"settings": true,
 	"help": true,
-	"voice": false,
+	"voice": true,
 }
 
 

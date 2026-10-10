@@ -18,6 +18,8 @@ const C_READY := "ready"
 const C_ACT := "act"
 const C_PING := "ping"
 const C_LEAVE := "leave"
+const C_VOICE := "v"
+const C_VOICE_PREF := "vpref"
 # host -> client
 const S_WELCOME := "welcome"
 const S_REJECT := "reject"
@@ -28,6 +30,7 @@ const S_REJECTED := "rejected"
 const S_PONG := "pong"
 const S_CLOSED := "closed"
 const S_KICKED := "kicked"
+const S_VOICE := "v"
 
 const ACTION_TYPES := ["play", "draw", "pass", "accept", "challenge", "choose_color", "uno", "catch"]
 

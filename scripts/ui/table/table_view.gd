@@ -40,6 +40,7 @@ var draw_btn: Button
 var hint: Label
 var info: Label
 var menu_btn: Button
+var voice_bar: VoiceBar
 var status_label: Label
 var _overlay: Control           # current in-table prompt (colour picker etc.)
 var _pending_play := {}
@@ -120,6 +121,8 @@ func _ready() -> void:
 	status_label = UiKit.label("", 16, Palette.TEXT_MUTED, 700)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(status_label)
+	voice_bar = VoiceBar.new()
+	add_child(voice_bar)
 
 	fx = Control.new()
 	fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -175,8 +178,9 @@ func _layout() -> void:
 	menu_btn.position = Vector2(18, 16)
 	info.position = Vector2(W / 2.0 - 250, 10)
 	info.size = Vector2(500, 26)
-	status_label.position = Vector2(W - 420, 14)
+	status_label.position = Vector2(W - 420, 76)
 	status_label.size = Vector2(400, 24)
+	voice_bar.position = Vector2(W - 20 - voice_bar.get_combined_minimum_size().x, 14)
 	_layout_seats()
 	hand.layout(false)
 
@@ -951,6 +955,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 func _process(dt: float) -> void:
+	_update_speaking()
 	# local turn-timer display (authority enforces the real deadline)
 	_timer_tick += dt
 	if view.is_empty() or int(view.get("turn_ms_total", 0)) <= 0:
@@ -966,6 +971,22 @@ func _process(dt: float) -> void:
 		my_seat.queue_redraw()
 	elif seat_views.has(cur):
 		seat_views[cur].timer_frac = frac
+
+
+## Voice activity rings around speaking players' avatars (online only).
+func _update_speaking() -> void:
+	if client == null or not client.online or not Voice.enabled():
+		return
+	var map := Net.pid_of_seat()
+	for seat in seat_views:
+		var sv: SeatView = seat_views[seat]
+		var lvl := Voice.level_for(int(map.get(seat, -1)))
+		if absf(lvl - sv.speaking) > 0.02:
+			sv.speaking = lvl
+			sv.set_process(true)
+			sv.queue_redraw()
+	my_seat.speaking = Voice.my_level if Voice.mic_on else 0.0
+	my_seat.queue_redraw()
 
 
 # --- feedback helpers -----------------------------------------------------------------

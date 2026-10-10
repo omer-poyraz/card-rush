@@ -18,6 +18,7 @@ const DEFAULTS := {
 	"bot_speed": 1,            # 0 relaxed, 1 normal, 2 fast
 	"screen_shake": true,
 	"ad_personalization": false,  # only meaningful after the consent flow (Stage 7)
+	"voice_enabled": true,        # global voice chat switch (separate from game sounds)
 }
 
 

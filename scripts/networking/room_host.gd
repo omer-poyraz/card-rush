@@ -224,7 +224,7 @@ func start_match() -> String:
 	for pid in members:
 		var m: Dictionary = members[pid]
 		if pid != HOST_PID and int(m["peer"]) > 0:
-			transport.send(int(m["peer"]), {"k": NetProtocol.S_START, "seat": seat_of_pid[pid]})
+			transport.send(int(m["peer"]), {"k": NetProtocol.S_START, "seat": seat_of_pid[pid], "pids": pid_of_seat.duplicate()})
 	_bump()
 	match_started.emit(local_client)
 	# give clients a moment to open the table before the deal arrives (it is buffered anyway)
@@ -319,6 +319,9 @@ func _allow(peer: int) -> bool:
 
 
 func _on_message(peer: int, msg: Dictionary) -> void:
+	if msg["k"] == NetProtocol.C_VOICE:
+		_on_voice(peer, msg)  # own budget: voice must not starve game messages
+		return
 	if not _allow(peer):
 		# tell the player instead of silently losing a move
 		if msg["k"] == NetProtocol.C_ACT and peer_to_pid.has(peer):
@@ -339,6 +342,8 @@ func _on_message(peer: int, msg: Dictionary) -> void:
 				_bump()
 		NetProtocol.C_ACT:
 			_on_act(pid, m, msg)
+		NetProtocol.C_VOICE_PREF:
+			m["voice_recv"] = bool(msg.get("recv", true))
 		NetProtocol.C_PING:
 			transport.send(peer, {"k": NetProtocol.S_PONG, "t": NetProtocol.int_field(msg, "t", 0)}, false)
 		NetProtocol.C_LEAVE:
@@ -373,7 +378,7 @@ func _on_hello(peer: int, msg: Dictionary) -> void:
 				transport.send(peer, {"k": NetProtocol.S_WELCOME, "pid": pid, "token": m["token"], "lobby": lobby_dict(), "code": code, "seq": int(m["seq"])})
 				if in_match and seat_of_pid.has(pid):
 					var seat: int = seat_of_pid[pid]
-					transport.send(peer, {"k": NetProtocol.S_START, "seat": seat, "resume": true})
+					transport.send(peer, {"k": NetProtocol.S_START, "seat": seat, "resume": true, "pids": pid_of_seat.duplicate()})
 					authority.set_connected(seat, true)
 					# a fresh view: only this player's own cards
 					transport.send(peer, {"k": NetProtocol.S_UPDATE, "view": authority.view_for(seat), "ev": []})
@@ -435,6 +440,53 @@ func _on_act(pid: int, m: Dictionary, msg: Dictionary) -> void:
 	var r := authority.submit(seat_of_pid[pid], action)
 	if not r["ok"]:
 		transport.send(int(m["peer"]), {"k": NetProtocol.S_REJECTED, "seq": seq, "error": r["error"]})
+
+
+# --- voice relay ----------------------------------------------------------------------
+
+const VOICE_MAX_PER_S := 40.0
+var _voice_rate := {}        # peer -> [tokens, last_ms]
+
+
+func _on_voice(peer: int, msg: Dictionary) -> void:
+	if not settings.get("voice", false) or not peer_to_pid.has(peer):
+		return
+	var r: Array = _voice_rate.get(peer, [VOICE_MAX_PER_S, Time.get_ticks_msec()])
+	var now := Time.get_ticks_msec()
+	r[0] = minf(VOICE_MAX_PER_S, float(r[0]) + (now - int(r[1])) / 1000.0 * VOICE_MAX_PER_S)
+	r[1] = now
+	if r[0] < 1.0:
+		_voice_rate[peer] = r
+		return
+	r[0] = float(r[0]) - 1.0
+	_voice_rate[peer] = r
+	var data: Variant = msg.get("d")
+	if not data is PackedByteArray or (data as PackedByteArray).size() > VoiceSettings.MAX_PACKET:
+		return
+	relay_voice(peer_to_pid[peer], NetProtocol.int_field(msg, "s", 0, 0), data)
+
+
+## Sends a voice packet from `from_pid` to everyone else who wants voice,
+## and plays it locally on the host.
+func relay_voice(from_pid: int, seq: int, data: PackedByteArray) -> void:
+	if not settings.get("voice", false):
+		return
+	var msg := {"k": NetProtocol.S_VOICE, "f": from_pid, "s": seq, "d": data}
+	for pid in members:
+		if pid == from_pid or pid == HOST_PID:
+			continue
+		var m: Dictionary = members[pid]
+		if int(m["peer"]) > 0 and m.get("voice_recv", true):
+			transport.send(int(m["peer"]), msg, false)
+	if from_pid != HOST_PID:
+		Voice.receive(from_pid, seq, data)
+
+
+func roster() -> Dictionary:
+	var out := {}
+	for pid in members:
+		out[pid] = members[pid]["name"]
+	return out
 
 
 func _on_published(seat: int, view: Dictionary, events: Array) -> void:

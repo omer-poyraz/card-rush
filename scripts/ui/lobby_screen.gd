@@ -91,8 +91,9 @@ func _show_create() -> void:
 	vis.changed.connect(upd)
 	var voice := CheckButton.new()
 	voice.text = tr("LOBBY_VOICE")
+	voice.button_pressed = bool(saved.get("voice", true))
 	voice.disabled = not Features.available("voice")
-	voice.tooltip_text = tr("FEATURE_SOON_TIP")
+	voice.tooltip_text = tr("LOBBY_VOICE_TIP")
 	lv.add_child(voice)
 	lv.add_child(UiKit.spacer())
 	_status = UiKit.label("", 17, Palette.CORAL, 700)
@@ -121,7 +122,7 @@ func _show_create() -> void:
 		var settings := {"name": n, "max_players": maxp.value, "public": vis.index == 1, "voice": voice.button_pressed,
 			"rules": _form.profile.to_dict(), "bots": []}
 		var s := Save.section("room_setup")
-		for k in ["name", "max_players", "public", "rules"]:
+		for k in ["name", "max_players", "public", "rules", "voice"]:
 			s[k] = settings[k]
 		Save.mark_dirty()
 		var err := Net.create_room(settings)
@@ -376,6 +377,13 @@ func _show_room() -> void:
 	var inv := UiKit.label(tr("LOBBY_INVITE_NOTE"), 14, Palette.TEXT_MUTED, 600)
 	inv.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rv.add_child(inv)
+	var vrow := UiKit.hbox(10)
+	rv.add_child(vrow)
+	var vl := UiKit.label(tr("LOBBY_VOICE_ON") if bool(_lobby().get("voice", false)) else tr("LOBBY_VOICE_OFF"), 16, Palette.TEXT_DIM, 700)
+	vl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	vrow.add_child(vl)
+	vrow.add_child(VoiceBar.new())
 	rv.add_child(UiKit.label(tr("LOBBY_RULES").to_upper(), 16, Palette.ELECTRIC, 800))
 	_rules_label = UiKit.label("", 16, Palette.TEXT_DIM, 650)
 	_rules_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -496,8 +504,12 @@ func _on_member_event(kind: String, name: String) -> void:
 			Audio.play("join")
 
 
+var _leaving := false
+
+
 func _on_client_state(s: String, detail: String) -> void:
-	if s in ["closed", "failed"] and is_inside_tree():
+	if s in ["closed", "failed"] and is_inside_tree() and not _leaving:
+		_leaving = true
 		var key := "LOBBY_KICKED" if detail == "kicked" else ("LOBBY_ROOM_CLOSED" if s == "closed" else detail)
 		App.toast(Loc.error_text(key) if key.begins_with("ERR_") else tr(key), Palette.CORAL, 3.5)
 		Net.leave_room()

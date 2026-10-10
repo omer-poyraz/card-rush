@@ -225,7 +225,7 @@ LOBBY_CODE_NOT_FOUND,Bu kodla yakında bir oda bulunamadı. Aynı Wi-Fi'da oldu�
 LOBBY_CONNECTING,Bağlanılıyor…,Connecting…
 LOBBY_CONNECT_IP,Bağlan,Connect
 LOBBY_CREATE,Odayı Kur,Create Room
-LOBBY_DEFAULT_ROOM_NAME,%s'in Masası,%s's Table
+LOBBY_DEFAULT_ROOM_NAME,Masa · %s,%s's Table
 LOBBY_DISCOVERY_UNAVAILABLE,Bu cihazda yakındaki odalar taranamıyor. IP adresiyle katılabilirsin.,Nearby rooms can't be scanned on this device. You can join by IP address.
 LOBBY_EMPTY_SEAT,— boş koltuk —,— empty seat —
 LOBBY_ENTER_CODE_PRIVATE,Bu oda özel: sağ taraftan oda kodunu gir.,This room is private: enter the room code on the right.
@@ -237,7 +237,7 @@ LOBBY_JOIN,Katıl,Join
 LOBBY_JOINED,%s odaya katıldı,%s joined
 LOBBY_KICK,Odadan çıkar,Kick
 LOBBY_KICKED,Oda sahibi seni odadan çıkardı.,The host removed you from the room.
-LOBBY_LAN_NOTE,Yerel ağ (aynı Wi-Fi) · İnternet üzerinden oda sonraki sürümde,Local network (same Wi-Fi) · Internet rooms in a later version
+LOBBY_LAN_NOTE,Yerel ağ (aynı Wi-Fi) veya IP ile bağlantı,Local network (same Wi-Fi) or direct IP
 LOBBY_LEAVE,Ayrıl,Leave
 LOBBY_LEAVE_BODY,Odadan ayrılırsan aynı kodla yeniden katılabilirsin.,You can rejoin later with the same code.
 LOBBY_LEAVE_HOST_BODY,Oda sahibisin: ayrılırsan oda herkes için kapanır ve süren maç biter.,You are the host: leaving closes the room for everyone and ends any match.
@@ -263,7 +263,10 @@ LOBBY_RULES,Kurallar,Rules
 LOBBY_SEARCHING,Aynı Wi-Fi ağındaki odalar aranıyor… Oda görünmüyorsa kodla ya da IP adresiyle katılmayı dene.,"Looking for rooms on this Wi-Fi… If a room doesn't show up, join by code or by IP address."
 LOBBY_START,Maçı Başlat,Start Match
 LOBBY_VISIBILITY,Görünürlük,Visibility
-LOBBY_VOICE,Sesli sohbet (yakında),Voice chat (coming soon)
+LOBBY_VOICE,Sesli sohbet,Voice chat
+LOBBY_VOICE_OFF,Sesli sohbet kapalı,Voice chat off
+LOBBY_VOICE_ON,Sesli sohbet açık,Voice chat on
+LOBBY_VOICE_TIP,Oyuncular istedikleri zaman mikrofonlarını açabilir. Kapalıysa oyun aynen devam eder.,Players can switch their mic on whenever they like. With voice off the game works the same.
 LOBBY_WAITING_ROOM,Bekleme Odası,Waiting Room
 LOBBY_WAITING_STATE,BEKLİYOR,WAITING
 MENU_BOTS,Botlara Karşı,Play vs Bots
@@ -355,6 +358,7 @@ SETTINGS_SOUND,Ses,Sound
 SETTINGS_TERMS,Kullanım Koşulları,Terms of Use
 SETTINGS_TITLE,Ayarlar,Settings
 SETTINGS_VOICE,Sesli sohbet,Voice chat
+SETTINGS_VOICE_ENABLED,Sesli sohbeti kullan,Use voice chat
 SETUP_DIFFICULTY,Bot zorluğu,Bot difficulty
 SETUP_PLAYERS,Oyuncu sayısı (sen dahil),Players (including you)
 SETUP_PLAYERS_NOTE,Klasik 108 kartlık deste 2–10 oyuncuyu destekler.,The classic 108-card deck supports 2–10 players.
@@ -409,3 +413,14 @@ TABLE_TARGET_N,Hedef %d puan,Target %d points
 TABLE_WD4_BLUFF_WARN,Dikkat: elinde aktif renkte kart var. Bu +4'e itiraz edilirse 4 kart çekersin.,Careful: you hold the active colour. If this +4 is challenged you draw 4.
 TABLE_YOU,Sen,You
 UNIT_SECONDS_N,%d sn,%ds
+VOICE_ALWAYS,Her zaman,Always
+VOICE_ALWAYS_TIP,Bu isimdeki oyuncuyu sonraki odalarda da sustur,Also mute this player name in future rooms
+VOICE_DEAFEN,Herkesi benim için sustur,Mute everyone for me
+VOICE_INPUT_DISABLED,Bu sürümde ses girişi kapalı.,Audio input is disabled in this build.
+VOICE_LOCAL_NOTE,Susturma ve ses seviyesi yalnızca senin cihazında geçerlidir; diğer oyuncuların ayarları değişmez. Yankı olmaması için kulaklık önerilir.,Mute and volume only apply on your device; other players' settings don't change. Headphones are recommended to avoid echo.
+VOICE_MIC,Mikrofon,Microphone
+VOICE_MIC_LIVE,● MİKROFON AÇIK,● MIC ON
+VOICE_MUTE,Sustur,Mute
+VOICE_NOBODY,Odada başka oyuncu yok.,No other players in the room.
+VOICE_PERMISSION_DENIED,"Mikrofon izni verilmedi. Oyuna mikrofonsuz devam edebilir, izni cihaz ayarlarından açabilirsin.","Microphone permission was denied. You can keep playing without it, or allow it in your device settings."
+VOICE_PLAYERS,Sesli sohbet,Voice chat

@@ -20,6 +20,7 @@ static func open() -> Control:
 	_slider(body, "SETTINGS_SFX", "sfx_volume")
 	if Features.available("voice"):
 		_slider(body, "SETTINGS_VOICE", "voice_volume")
+		_toggle(body, "SETTINGS_VOICE_ENABLED", "voice_enabled")
 
 	_section(body, "SETTINGS_LANGUAGE")
 	var langs := UiKit.hbox(10)

@@ -154,8 +154,12 @@ func _back_to_lobby() -> void:
 		App.goto("menu")
 
 
+var _leaving := false
+
+
 func _on_room_state(s: String, detail: String) -> void:
-	if s in ["closed", "failed"] and is_inside_tree():
+	if s in ["closed", "failed"] and is_inside_tree() and not _leaving:
+		_leaving = true
 		var msg := tr("LOBBY_KICKED") if detail == "kicked" else (Loc.error_text(detail) if detail.begins_with("ERR_") else tr("LOBBY_ROOM_CLOSED"))
 		App.toast(msg, Palette.CORAL, 4.0)
 		DisplayServer.screen_set_keep_on(false)

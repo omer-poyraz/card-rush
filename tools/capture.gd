@@ -45,6 +45,11 @@ func _ready() -> void:
 			get_tree().change_scene_to_file(App.SCENES["table"])
 		"cards":
 			_card_sheet()
+		"lobby":
+			App.params = {"action": args.get("action", "join")}
+			if args.get("action") == "room":
+				Net.create_room({"name": "Ömer'in Masası", "max_players": 5, "bots": [1, 2], "rules": RuleProfile.classic().to_dict()})
+			get_tree().change_scene_to_file(App.SCENES["lobby"])
 		"settings":
 			get_tree().change_scene_to_file(App.SCENES["menu"])
 			await get_tree().create_timer(0.5).timeout

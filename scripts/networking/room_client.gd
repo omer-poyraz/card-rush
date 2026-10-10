@@ -26,6 +26,7 @@ var match_client: NetworkMatchClient
 var player_name := ""
 var avatar := 0
 var latency_ms := -1
+var pid_of_seat := {}        # seat -> pid in the running match (voice indicators)
 ## Builds a transport for (address, port). Tests inject a loopback factory.
 var transport_factory: Callable
 var _seq := 0
@@ -143,7 +144,10 @@ func _on_message(_from: int, msg: Dictionary) -> void:
 				match_client.room = self
 				add_child(match_client)
 			match_client.seat = seat
-			_seq = maxi(_seq, 0)
+			if msg.get("pids") is Dictionary:
+				pid_of_seat.clear()
+				for k in msg["pids"]:
+					pid_of_seat[int(k)] = int(msg["pids"][k])
 			_set_state(State.MATCH, "")
 			match_starting.emit(match_client, resume)
 		NetProtocol.S_UPDATE:
@@ -152,6 +156,10 @@ func _on_message(_from: int, msg: Dictionary) -> void:
 		NetProtocol.S_REJECTED:
 			if match_client:
 				match_client.action_rejected.emit(NetProtocol.str_field(msg, "error", 40))
+		NetProtocol.S_VOICE:
+			var d: Variant = msg.get("d")
+			if d is PackedByteArray:
+				Voice.receive(NetProtocol.int_field(msg, "f", -1), NetProtocol.int_field(msg, "s", 0, 0), d)
 		NetProtocol.S_PONG:
 			latency_ms = Time.get_ticks_msec() - NetProtocol.int_field(msg, "t", 0)
 		NetProtocol.S_CLOSED:
@@ -186,13 +194,17 @@ func set_ready(r: bool) -> void:
 
 
 func leave() -> void:
+	if state in [State.CLOSED, State.FAILED] and transport == null:
+		return
 	_closing = true
 	if transport and state in [State.LOBBY, State.MATCH, State.CONNECTING]:
 		transport.send(NetTransport.HOST_ID, {"k": NetProtocol.C_LEAVE})
 		await get_tree().create_timer(0.15).timeout
 	if transport:
 		transport.close()
-	_set_state(State.CLOSED, "left")
+		transport = null
+	if state != State.CLOSED and state != State.FAILED:
+		_set_state(State.CLOSED, "left")
 
 
 func _fail(reason: String) -> void:

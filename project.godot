@@ -19,6 +19,10 @@ boot_splash/bg_color=Color(0.039, 0.043, 0.11, 1)
 boot_splash/show_image=false
 config/icon="res://icon.svg"
 
+[audio]
+
+driver/enable_input=true
+
 [autoload]
 
 Save="*res://scripts/persistence/save_manager.gd"
@@ -27,6 +31,7 @@ Loc="*res://scripts/localization/localization_manager.gd"
 Audio="*res://scripts/core/audio_manager.gd"
 App="*res://scripts/core/app.gd"
 Net="*res://scripts/networking/network_manager.gd"
+Voice="*res://scripts/voice/voice_chat_manager.gd"
 
 [display]
 

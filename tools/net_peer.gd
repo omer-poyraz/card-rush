@@ -31,7 +31,7 @@ func _ready() -> void:
 	var code: String = args.get("code", "ABCDEF")
 	if args.get("role") == "host":
 		Net.host_port = port
-		var err := Net.create_room({"name": "Test", "max_players": 3, "bots": [1], "rules": RuleProfile.classic().to_dict()}, code)
+		var err := Net.create_room({"name": "Test", "max_players": 3, "bots": [1], "voice": args.has("voice"), "rules": RuleProfile.classic().to_dict()}, code)
 		print("NETPEER host create: ", err if err != "" else "ok")
 		Net.host.lobby_changed.connect(_host_lobby)
 		Net.host.match_started.connect(func(lc): _open_table(lc))
@@ -59,7 +59,35 @@ func _open_table(mc: MatchClient) -> void:
 	get_tree().change_scene_to_file(App.SCENES["table"])
 
 
-func _process(_dt: float) -> void:
+var _tone_t := 0.0
+var _tone_acc := 0.0
+var voice_max_level := 0.0
+var voice_frames := 0
+
+
+func _voice_probe(dt: float) -> void:
+	if not args.has("voice") or Net.match_client() == null:
+		return
+	if args.get("role") == "host":
+		# speak a 300 Hz tone as if from the microphone
+		_tone_acc += dt
+		while _tone_acc >= 0.04:
+			_tone_acc -= 0.04
+			var f := PackedFloat32Array()
+			f.resize(VoiceSettings.FRAME_SAMPLES)
+			for i in f.size():
+				f[i] = sin(_tone_t) * 0.3
+				_tone_t += TAU * 300.0 / VoiceSettings.SAMPLE_RATE
+			Voice.submit_frame(f)
+	else:
+		if Voice.participants.has(1):
+			var p: VoiceParticipant = Voice.participants[1]
+			voice_max_level = maxf(voice_max_level, p.level)
+			voice_frames = maxi(voice_frames, p.queued_frames())
+
+
+func _process(dt: float) -> void:
+	_voice_probe(dt)
 	var mc := Net.match_client()
 	if mc == null or bot == null:
 		return
@@ -98,6 +126,8 @@ func _finish(why: String) -> void:
 	var mc := Net.match_client()
 	var v: Dictionary = mc.last_view if mc else {}
 	var line := "NETPEER_RESULT role=%s why=%s version=%s winner=%s hand=%d" % [args.get("role"), why, v.get("version", -1), v.get("match_winner", -1), v.get("hand", []).size()]
+	if args.has("voice"):
+		line += " voice_enabled=%s voice_peak=%.2f" % [Voice.enabled(), voice_max_level]
 	if Net.host and Net.host.authority:
 		line += " authority_version=%d integrity=%s" % [Net.host.authority.state.version, Net.host.authority.state.check_integrity()]
 	print(line)

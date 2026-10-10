@@ -93,8 +93,11 @@ static func theme() -> Theme:
 	t.set_color("font_hover_pressed_color", "CheckButton", Color.WHITE)
 	t.set_icon("checked", "CheckButton", _toggle_tex(true))
 	t.set_icon("unchecked", "CheckButton", _toggle_tex(false))
-	for st in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+	for st in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled", "hover_pressed_mirrored"]:
 		t.set_stylebox(st, "CheckButton", StyleBoxEmpty.new())
+	t.set_color("font_disabled_color", "CheckButton", Palette.TEXT_MUTED)
+	t.set_icon("checked_disabled", "CheckButton", _toggle_tex(true))
+	t.set_icon("unchecked_disabled", "CheckButton", _toggle_tex(false))
 
 	# Option buttons / popups
 	t.set_font("font", "OptionButton", font(700))

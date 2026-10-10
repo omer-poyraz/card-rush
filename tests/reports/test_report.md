@@ -1,0 +1,96 @@
+# Card Rush — Test Report
+
+- Date: 2026-10-10T19:01:32
+- Godot: 4.7.2-stable (official)
+- Total: 88, passed: 88, failed: 0
+
+| File | Test | Result | ms | Detail |
+|---|---|---|---|---|
+| test_bots.gd | test_all_levels_finish_games | PASS | 316 |  |
+| test_bots.gd | test_mixed_levels_points_mode | PASS | 89 |  |
+| test_bots.gd | test_bots_with_house_rules | PASS | 108 |  |
+| test_bots.gd | test_bot_never_plays_invalid_card | PASS | 9 |  |
+| test_bots.gd | test_bot_draws_without_playable_card | PASS | 0 |  |
+| test_bots.gd | test_bot_plays_drawn_playable_card | PASS | 0 |  |
+| test_bots.gd | test_bot_picks_majority_colour | PASS | 1 |  |
+| test_bots.gd | test_hard_bot_never_bluffs_wd4 | PASS | 4 |  |
+| test_bots.gd | test_bot_responds_to_challenge_phase | PASS | 0 |  |
+| test_bots.gd | test_bot_view_has_no_hidden_cards | PASS | 1 |  |
+| test_bots.gd | test_authority_overrides_spoofed_player | PASS | 0 |  |
+| test_bots.gd | test_authority_bot_takeover_on_disconnect | PASS | 0 |  |
+| test_bots.gd | test_authority_runs_real_time_bot_match | PASS | 498 |  |
+| test_deck.gd | test_classic_deck_has_108_cards | PASS | 0 |  |
+| test_deck.gd | test_each_colour_has_correct_cards | PASS | 0 |  |
+| test_deck.gd | test_wild_cards | PASS | 0 |  |
+| test_deck.gd | test_unique_ids_match_index | PASS | 1 |  |
+| test_deck.gd | test_card_points | PASS | 0 |  |
+| test_deck.gd | test_shuffle_preserves_cards | PASS | 1 |  |
+| test_deck.gd | test_two_shuffles_differ | PASS | 0 |  |
+| test_deck.gd | test_deal_seven_each | PASS | 0 |  |
+| test_deck.gd | test_draw_and_discard_do_not_lose_cards | PASS | 0 |  |
+| test_deck.gd | test_reshuffle_keeps_top_card | PASS | 1 |  |
+| test_deck.gd | test_empty_piles_do_not_loop | PASS | 0 |  |
+| test_fuzz_games.gd | test_random_classic_games | PASS | 1547 |  |
+| test_fuzz_games.gd | test_random_points_games | PASS | 1166 |  |
+| test_fuzz_games.gd | test_random_house_rule_games | PASS | 1218 |  |
+| test_fuzz_games.gd | test_random_strict_wd4_games | PASS | 497 |  |
+| test_house_rules.gd | test_stacking_off_by_default | PASS | 0 |  |
+| test_house_rules.gd | test_stack_draw_two | PASS | 0 |  |
+| test_house_rules.gd | test_stack_draw_four_and_challenge_not_available_on_chain | PASS | 0 |  |
+| test_house_rules.gd | test_mixed_stacking_requires_flag | PASS | 1 |  |
+| test_house_rules.gd | test_seven_swaps_hands | PASS | 0 |  |
+| test_house_rules.gd | test_zero_rotates_hands | PASS | 1 |  |
+| test_house_rules.gd | test_seven_without_house_rule_is_normal | PASS | 0 |  |
+| test_house_rules.gd | test_auto_play_drawn | PASS | 0 |  |
+| test_house_rules.gd | test_auto_play_drawn_wild_still_asks_colour | PASS | 1 |  |
+| test_house_rules.gd | test_custom_uno_penalty | PASS | 0 |  |
+| test_rules.gd | test_valid_cards_playable | PASS | 0 |  |
+| test_rules.gd | test_same_number_other_colour | PASS | 1 |  |
+| test_rules.gd | test_invalid_card_rejected_by_engine | PASS | 0 |  |
+| test_rules.gd | test_not_your_turn | PASS | 0 |  |
+| test_rules.gd | test_card_not_in_hand | PASS | 0 |  |
+| test_rules.gd | test_same_card_cannot_be_played_twice | PASS | 0 |  |
+| test_rules.gd | test_stale_version_rejected | PASS | 0 |  |
+| test_rules.gd | test_skip_skips_next_player | PASS | 0 |  |
+| test_rules.gd | test_reverse_changes_direction | PASS | 0 |  |
+| test_rules.gd | test_reverse_two_players_acts_as_skip | PASS | 0 |  |
+| test_rules.gd | test_skip_two_players | PASS | 1 |  |
+| test_rules.gd | test_draw_two_penalty | PASS | 0 |  |
+| test_rules.gd | test_draw_two_on_draw_two_matches_symbol | PASS | 0 |  |
+| test_rules.gd | test_wild_sets_colour | PASS | 1 |  |
+| test_rules.gd | test_wd4_restriction_detects_colour_only | PASS | 1 |  |
+| test_rules.gd | test_wd4_strict_mode_blocks_illegal_play | PASS | 0 |  |
+| test_rules.gd | test_wd4_accept | PASS | 1 |  |
+| test_rules.gd | test_wd4_challenge_succeeds_when_bluffing | PASS | 0 |  |
+| test_rules.gd | test_wd4_challenge_same_number_other_colour_is_not_guilty | PASS | 1 |  |
+| test_rules.gd | test_wd4_challenge_fails | PASS | 0 |  |
+| test_rules.gd | test_challenge_only_by_victim_and_only_once | PASS | 1 |  |
+| test_rules.gd | test_challenge_view_does_not_leak_hand | PASS | 0 |  |
+| test_rules.gd | test_draw_playable_card_then_play_it | PASS | 1 |  |
+| test_rules.gd | test_draw_playable_card_and_keep_it | PASS | 0 |  |
+| test_rules.gd | test_draw_unplayable_card_ends_turn | PASS | 0 |  |
+| test_rules.gd | test_draw_allowed_with_playable_card_official | PASS | 1 |  |
+| test_rules.gd | test_cannot_draw_twice | PASS | 0 |  |
+| test_rules.gd | test_uno_called_in_time_is_safe | PASS | 0 |  |
+| test_rules.gd | test_uno_missed_and_caught | PASS | 1 |  |
+| test_rules.gd | test_uno_self_call_after_playing | PASS | 0 |  |
+| test_rules.gd | test_uno_window_closes_when_next_player_acts | PASS | 0 |  |
+| test_rules.gd | test_uno_window_expires_by_time | PASS | 0 |  |
+| test_rules.gd | test_cannot_catch_self_or_safe_player | PASS | 1 |  |
+| test_rules.gd | test_uno_invalid_with_many_cards | PASS | 0 |  |
+| test_rules.gd | test_last_card_wins_round_single_mode | PASS | 0 |  |
+| test_rules.gd | test_points_mode_continues_until_target | PASS | 0 |  |
+| test_rules.gd | test_points_mode_reaches_target | PASS | 1 |  |
+| test_rules.gd | test_final_draw_two_counts | PASS | 0 |  |
+| test_rules.gd | test_final_wd4_counts | PASS | 1 |  |
+| test_rules.gd | test_no_actions_after_game_over | PASS | 0 |  |
+| test_rules.gd | test_first_card_rules_via_start_round | PASS | 56 |  |
+| test_rules.gd | test_first_wild_choose_colour | PASS | 1 |  |
+| test_rules.gd | test_number_only_first_card_house_rule | PASS | 14 |  |
+| test_rules.gd | test_dealer_rotates_each_round | PASS | 0 |  |
+| test_rules.gd | test_player_count_limits | PASS | 0 |  |
+| test_rules.gd | test_ten_players_full_deal | PASS | 0 |  |
+| test_rules.gd | test_profile_round_trip_and_sanitising | PASS | 0 |  |
+| test_rules.gd | test_classic_profile_has_no_house_rules | PASS | 0 |  |
+| test_rules.gd | test_state_view_hides_other_hands | PASS | 0 |  |
+| test_rules.gd | test_state_serialisation_round_trip | PASS | 0 |  |

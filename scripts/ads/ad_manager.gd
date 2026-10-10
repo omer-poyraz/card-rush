@@ -173,8 +173,19 @@ func banner_visible() -> bool:
 	return _want_banner and _banner_state == LoadState.READY and _ads_allowed()
 
 
+## Bottom space (canvas units) menus keep free while a banner shows. Uses the
+## SDK's real banner height converted from screen pixels to canvas units.
 func banner_reserve() -> int:
-	return BANNER_RESERVE if banner_visible() else 0
+	if not banner_visible():
+		return 0
+	var px := backend.banner_height_px()
+	if px <= 0 or not is_inside_tree():
+		return BANNER_RESERVE
+	var win_h := float(DisplayServer.window_get_size().y)
+	var canvas_h := get_viewport().get_visible_rect().size.y
+	if win_h <= 0.0:
+		return BANNER_RESERVE
+	return int(ceil(px * canvas_h / win_h)) + 8
 
 
 # --- interstitial ------------------------------------------------------------------------

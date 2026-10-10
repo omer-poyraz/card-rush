@@ -48,6 +48,11 @@ func banner_destroy() -> void:
 	pass
 
 
+## Real banner height in screen pixels (0 if unknown).
+func banner_height_px() -> int:
+	return 0
+
+
 func interstitial_load() -> void:
 	pass
 

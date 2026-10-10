@@ -96,6 +96,10 @@ func banner_set_visible(on: bool) -> void:
 		_banner.hide()
 
 
+func banner_height_px() -> int:
+	return _banner.get_height_in_pixels() if _banner else 0
+
+
 func banner_destroy() -> void:
 	if _banner:
 		_banner.destroy()

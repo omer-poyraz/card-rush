@@ -4,4 +4,8 @@ Godot Engine 4.7.2 — MIT License — Copyright (c) 2014-present Godot Engine c
 Baloo 2 font — SIL Open Font License 1.1 — Ek Type.
 Nunito font — SIL Open Font License 1.1 — The Nunito Project Authors.
 
+webrtc-native 1.2.2 — MIT License — Godot Engine contributors.
+libdatachannel, libjuice — Mozilla Public License 2.0 — Paul-Louis Ageneau. Source: github.com/paullouisageneau.
+usrsctp, libsrtp — BSD 3-Clause. Mbed TLS — Apache License 2.0. plog — MIT.
+
 All card artwork, icons, logo, sounds and music were created for Card Rush.

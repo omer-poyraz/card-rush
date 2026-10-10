@@ -1,16 +1,11 @@
 # Card Rush — Yapılacaklar
 
-## Aşama 5 — Yerel ağ (sıradaki)
-- [ ] NetworkManager + adaptörler (Offline / ENet LAN / doğrudan IP), LAN oda keşfi (UDP yayını)
-- [ ] RoomManager: oda kodu, bekleme odası, hazır durumu, bot ekleme, kural profili gösterimi, host başlatır
-- [ ] NetworkMatchClient: eylem isteği (seq + sürüm), redakte görünüm/olay alımı
-- [ ] Kopma: koltuk koruma, yeniden bağlanma tokenı, bot devralma, yinelenen mesaj reddi
-- [ ] Host ayrılması: yeniden bağlanma süresi; güvenli devir ya da maçı bitirme
-- [ ] Testler: iki/çok süreçli yerel ENet testi, gizli kart sızıntısı, sahte koltuk
-
-## Aşama 6 — İnternet ve sesli sohbet
-- [ ] Bağlantı yöntemlerini araştır ve belgele (WebRTC GDExtension, signaling, TURN maliyeti)
-- [ ] Sesli sohbet modülleri (VoiceChatManager, VoiceConnection, VoiceParticipant, VoiceSettings, VoicePermissionManager)
+## Aşama 5–6 kalanlar
+- [ ] Cloudflare Worker'ı dağıt, `card_rush/online/signaling_url` ayarla, gerçek mobil ağlar arasında dene; TURN anahtarı ekle
+- [ ] Lobi host devri (maç dışında, gizli durum yokken)
+- [ ] Android: Wi-Fi multicast kilidi (keşif güvenilirliği) — gerekirse küçük Android eklentisi
+- [ ] Sesli sohbet: Opus (TwoVoIP, MIT) ile bant genişliği azaltma; bas-konuş seçeneği; mobil cihaz testleri
+- [ ] Davet bağlantısı (`cardrush://`) deep link
 
 ## Aşama 7 — Reklam ve IAP
 - [ ] AdConfig (test/üretim ayrımı), AdManager, banner/geçiş/ödüllü, Premium reklam engeli, UMP onayı

@@ -39,3 +39,17 @@ Her karar: bağlam → karar → sonuç. Yeni kararlar sona eklenir.
 **D-18 Hazır olmayan özellikler.** Menüde "YAKINDA" rozetiyle devre dışı (`Features.AVAILABLE`); sahte ekran yok. Sesli sohbet kaydırıcısı da sesli sohbet gelene kadar gizli.
 
 **D-19 Resmi "Alternative Scoring".** Kaynaktaki alternatif puanlama `LOW_TALLY` modu olarak eklendi (herkes kendi kalanını biriktirir, hedefe biri ulaşınca en düşük kazanır).
+
+**D-20 Ağ: taşıma bağımsız oda protokolü.** `RoomHost`/`RoomClient` yalnızca `NetTransport` arayüzünü bilir; ENet (LAN/IP), WebRTC (internet) ve test için bellek içi loopback aynı kodu çalıştırır. RPC/düğüm yolu kullanılmadı (MultiplayerPeer'ın ham paket API'si).
+
+**D-21 Host otoritesi, yıldız topoloji.** Sunucu bütçesi yok; oda sahibi otoritedir. Konuklar yalnızca host'a bağlanır (WebRTC'de de). Güvenlik sınırı NETWORKING.md'de açıkça yazılı.
+
+**D-22 Maç ortası otorite devri yok.** Gizli elleri bir oyuncuya aktarmadan güvenli devir mümkün değil; host 30 sn içinde dönmezse maç güvenli biçimde biter.
+
+**D-23 Kopma politikası.** 20 sn koltuk koruma, sonra geçici bot (oda ayarı: bot / otomatik hamle). Bilerek ayrılma beklemeden uygulanır.
+
+**D-24 İnternet: WebRTC + kendi signaling.** Ücretsiz ve gerçekçi seçenek: Cloudflare Workers + Durable Objects (ücretsiz plan, aşımda hata — fatura yok). TURN ayrı maliyettir (1 TB/ay ücretsiz, sonra ücretli); anahtar yalnızca Worker'da. STUN Google (ücretsiz, SLA yok). URL boşsa özellik kapalı.
+
+**D-25 Ses codec'i IMA-ADPCM.** Tüm platformlarda yerel eklenti gerektirmeyen saf GDScript; 64 kbit/sn konuşurken + VAD. Opus (TwoVoIP) ileride. AEC yok → kulaklık önerisi arayüzde.
+
+**D-26 webrtc-native kırpıldı.** Yalnızca Windows x86_64, Linux x86_64 (geliştirme/test), macOS, Android arm64/x86_64, iOS ikilileri tutuldu (~49 MB). Android armv7 için eklentide ikili yok.

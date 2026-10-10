@@ -1,6 +1,6 @@
 # Card Rush — Proje Durumu
 
-_Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 97/97 geçti (`tools/run_tests.sh`)_
+_Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 127/127 geçti (`tools/run_tests.sh`)_
 
 ## Aşama özeti
 | Aşama | Durum | Not |
@@ -9,8 +9,8 @@ _Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 97/97 geçti (`tools/run
 | 2 Oynanabilir kart oyunu | ✅ Tamam | 108 kart, tüm klasik kurallar + resmi alternatif puanlama, ev kuralları; çevrim dışı tam maç |
 | 3 Yapay zekâ | ✅ Tamam | Kolay/Normal/Zor, karışık masa, 2–10 oyuncu; bot testleri |
 | 4 Premium arayüz ve animasyonlar | ✅ Büyük ölçüde | Dağıtma/çekme/oynama/ceza/yön/renk/UNO/itiraz animasyonları, sesler, sonuç ekranları, konfeti. Cila maddeleri TODO'da |
-| 5 Yerel ağ | ⏳ Sıradaki | |
-| 6 İnternet + sesli sohbet | ⬜ | |
+| 5 Yerel ağ | ✅ Tamam | ENet LAN + doğrudan IP, keşif, oda kodu, lobi, yeniden bağlanma, bot devralma. 17 ağ testi + iki süreçli gerçek maç |
+| 6 İnternet + sesli sohbet | ✅ Kod tamam / 🟡 dağıtım | WebRTC + signaling (dev sunucu ile 3 süreçli maç testli); Cloudflare Worker yazıldı, **dağıtılmadı**. Sesli sohbet LAN/İnternet üzerinden çalışıyor (Linux'ta doğrulandı, mobilde test edilmedi) |
 | 7 Reklam + IAP | ⬜ | Kardeş projede doğrulanmış eklentiler mevcut (AdMob 5.1.0, Play Billing 3.3.0) |
 | 8 İlerleme, kozmetik | 🟡 Kısmi | XP/seviye/istatistik/geçmiş + profil çalışıyor; görevler, koleksiyon, mağaza yok |
 | 9 Test ve yayın | ⬜ | |
@@ -23,9 +23,11 @@ _Son güncelleme: 2026-10-10 · Godot 4.7.2 · Testler: 97/97 geçti (`tools/run
 - Klavye kısayolları (Windows), Android geri tuşu, uygulama arka plana geçince çevrim dışı maçın duraklaması.
 
 ## Henüz yok / doğrulanmadı
-- Multiplayer, sesli sohbet, reklam, IAP, görevler, koleksiyon, mağaza, arkadaşlar (menüde "YAKINDA").
+- Reklam, IAP, görevler, koleksiyon, mağaza, arkadaşlar (menüde "YAKINDA").
+- İnternet odaları için üretim signaling sunucusu dağıtılmadı (`server/signaling-worker/README.md`); `card_rush/online/signaling_url` boş → İnternet seçeneği gerekçesiyle kapalı.
+- Sesli sohbet ve ağ oyunu yalnızca Linux masaüstünde doğrulandı; Android/iOS/Windows cihaz testi yok.
 - Android/iOS/Windows dışa aktarımı henüz denenmedi (export_presets yok). Dokunmatik giriş gerçek cihazda test edilmedi (fare emülasyonu ile tasarlandı).
 - "UNO" kelimesi marka riski taşıyor — D-12.
 
 ## Önemli dosyalar
-Kurallar `scripts/rules/`, durum `scripts/game/`, botlar `scripts/ai/`, masa `scripts/ui/table/`, metinler `tools/localization/strings.py`, kurallar belgesi `docs/GAME_RULES.md`.
+Ağ `scripts/networking/` (bkz. `docs/NETWORKING.md`), ses `scripts/voice/`, kurallar `scripts/rules/`, durum `scripts/game/`, botlar `scripts/ai/`, masa `scripts/ui/table/`, metinler `tools/localization/strings.py`, kurallar belgesi `docs/GAME_RULES.md`.

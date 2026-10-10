@@ -77,7 +77,11 @@ func _finish() -> void:
 	if _done:
 		return
 	_done = true
-	App.goto("menu")
+	# consent form (where required) + ad SDK init; never blocks offline play
+	if App.capture_mode:
+		App.goto("menu")
+		return
+	Ads.start(func(): App.goto("menu"))
 
 
 func _input(e: InputEvent) -> void:

@@ -12,10 +12,17 @@ func _ready() -> void:
 		_add_floating_cards()
 	_build()
 	Audio.play_music("music_menu")
+	Ads.show_banner()
 	Loc.locale_changed.connect(_rebuild)
 	if Save.recovered_from != "":
 		App.toast(tr("SAVE_RECOVERED"), Palette.SUN, 4.0)
 		Save.recovered_from = ""
+
+
+func _on_banner(_v: bool) -> void:
+	for c in get_children():
+		if c is MarginContainer and c.has_meta("menu_ui"):
+			c.add_theme_constant_override("margin_bottom", 28 + Ads.banner_reserve())
 
 
 func _rebuild() -> void:
@@ -63,6 +70,9 @@ func _build() -> void:
 		root.add_theme_constant_override("margin_" + side, 28)
 	root.add_theme_constant_override("margin_left", 44)
 	root.add_theme_constant_override("margin_right", 44)
+	root.add_theme_constant_override("margin_bottom", 28 + Ads.banner_reserve())
+	if not Ads.banner_state_changed.is_connected(_on_banner):
+		Ads.banner_state_changed.connect(_on_banner)
 	_mark(root)
 	var col := UiKit.vbox(10)
 	root.add_child(col)
@@ -73,6 +83,23 @@ func _build() -> void:
 	_profile_chip = _make_profile_chip()
 	top.add_child(_profile_chip)
 	top.add_child(UiKit.spacer())
+	var coins := UiKit.button("", UiKit.Variant.GHOST, Vector2(130, 60))
+	var ch := UiKit.hbox(8)
+	ch.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ch.alignment = BoxContainer.ALIGNMENT_CENTER
+	ch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	coins.add_child(ch)
+	var cic := IconView.new()
+	cic.icon = "coin"
+	cic.color = Palette.SUN
+	cic.custom_minimum_size = Vector2(28, 28)
+	cic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	ch.add_child(cic)
+	var cl := UiKit.label(str(Economy.coins()), 22, Palette.SUN, 800, true)
+	cl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	ch.add_child(cl)
+	coins.pressed.connect(func(): App.goto("store"))
+	top.add_child(coins)
 	var help_btn := UiKit.icon_button("help", tr("MENU_HELP"), 60)
 	help_btn.pressed.connect(func(): HelpDialog.open())
 	top.add_child(help_btn)
@@ -122,10 +149,16 @@ func _build() -> void:
 		var tile := _tile(entry[0], entry[1], entry[2])
 		right.add_child(tile)
 		match entry[2]:
-			"profile":
-				tile.pressed.connect(func(): App.goto("profile"))
 			"help":
 				tile.pressed.connect(func(): HelpDialog.open())
+			"missions":
+				var n := Missions.claimable_count()
+				if n > 0:
+					_badge(tile, str(n))
+				tile.pressed.connect(func(): App.goto("missions"))
+			_:
+				var target: String = entry[2]
+				tile.pressed.connect(func(): App.goto(target))
 
 	# --- footer ---
 	var foot := UiKit.hbox(10)
@@ -152,6 +185,7 @@ func _make_profile_chip() -> Button:
 	b.add_child(h)
 	var av := AvatarView.new()
 	av.avatar = int(prof.get("avatar", 0))
+	av.ring_color = Cosmetics.frame_color()
 	av.custom_minimum_size = Vector2(56, 56)
 	av.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	h.add_child(av)
@@ -247,6 +281,20 @@ func _apply_availability(b: Button, feature: String, ic: IconView) -> void:
 	badge.add_theme_stylebox_override("normal", sb)
 	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	badge.position = Vector2(-6, -10)
+	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	b.add_child(badge)
+
+
+func _badge(b: Control, text: String) -> void:
+	var badge := UiKit.label(text, 15, Color.WHITE, 800)
+	var sb := UiKit.flat(Palette.DANGER, 12)
+	sb.content_margin_left = 9
+	sb.content_margin_right = 9
+	sb.content_margin_top = 1
+	sb.content_margin_bottom = 1
+	badge.add_theme_stylebox_override("normal", sb)
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.position = Vector2(-8, -10)
 	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	b.add_child(badge)
 

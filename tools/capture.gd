@@ -27,6 +27,8 @@ func _ready() -> void:
 		Loc.set_language(args["lang"])
 	if args.has("colorblind"):
 		Settings.set_value("colorblind", true)
+	if args.has("coins"):
+		Economy.grant(int(args["coins"]), "capture")
 	if args.has("reduced"):
 		Settings.set_value("animation", 1)
 	if args.has("quality"):

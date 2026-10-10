@@ -46,7 +46,7 @@ var _overlay: Control           # current in-table prompt (colour picker etc.)
 var _pending_play := {}
 var _target_cb := Callable()
 var _last_turn_serial := -1
-var _stats := {"cards_played": 0, "uno_calls": 0, "catches": 0}
+var _stats := {"cards_played": 0, "uno_calls": 0, "catches": 0, "actions": 0}
 var _timer_tick := 0.0
 
 
@@ -133,7 +133,14 @@ func _ready() -> void:
 	Audio.play_music("music_table")
 
 
+func _apply_back_style() -> void:
+	for d in deck_views:
+		d.back_style = back_style
+		d.queue_redraw()
+
+
 func bind(c: MatchClient) -> void:
+	_apply_back_style()
 	client = c
 	me = c.seat
 	my_seat.seat = me
@@ -417,6 +424,8 @@ func _anim_play(e: Dictionary) -> void:
 	if p == me:
 		cv = hand.take_view(cid)
 		_stats["cards_played"] += 1
+		if d.is_action():
+			_stats["actions"] += 1
 	if cv != null:
 		from = cv.global_position + cv.size / 2.0
 		var gp := cv.global_position
@@ -635,6 +644,7 @@ func _refresh_seats(v: Dictionary) -> void:
 	var mp: Dictionary = v["players"][me].duplicate()
 	mp["name"] = str(mp["name"])
 	mp["count"] = hand.order.size()
+	mp["frame"] = Cosmetics.equipped("frame")
 	my_seat.update(mp, int(v["current"]) == me and int(v["phase"]) < Phase.ROUND_OVER, false, show_score)
 
 

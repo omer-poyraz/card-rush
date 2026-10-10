@@ -74,6 +74,8 @@ func update(p: Dictionary, turn: bool, can_catch: bool, show_score: bool) -> voi
 	is_turn = turn
 	catchable = can_catch
 	_avatar.avatar = int(p.get("avatar", 0))
+	if p.has("frame"):
+		_avatar.ring_color = Cosmetics.frame_color(str(p["frame"]))
 	_avatar.dimmed = not bool(p.get("connected", true))
 	_name.text = str(p.get("name", ""))
 	_count.text = "×%d" % int(p.get("count", 0))

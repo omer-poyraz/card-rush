@@ -1,0 +1,22 @@
+{
+  "items": [
+    {"id": "back_classic", "type": "back", "unlock": "default"},
+    {"id": "back_sunset", "type": "back", "unlock": "coins", "price": 150},
+    {"id": "back_aurora", "type": "back", "unlock": "coins", "price": 250},
+    {"id": "back_gold", "type": "back", "unlock": "level", "level": 15},
+    {"id": "back_neon", "type": "back", "unlock": "premium", "pack": "cardrush_pack_neon"},
+    {"id": "back_mint", "type": "back", "unlock": "pack", "pack": "cardrush_pack_neon"},
+
+    {"id": "table_night", "type": "table", "unlock": "default"},
+    {"id": "table_ocean", "type": "table", "unlock": "coins", "price": 200},
+    {"id": "table_ember", "type": "table", "unlock": "coins", "price": 300},
+    {"id": "table_forest", "type": "table", "unlock": "level", "level": 8},
+    {"id": "table_royal", "type": "table", "unlock": "premium"},
+
+    {"id": "frame_none", "type": "frame", "unlock": "default"},
+    {"id": "frame_ruby", "type": "frame", "unlock": "coins", "price": 120},
+    {"id": "frame_teal", "type": "frame", "unlock": "level", "level": 5},
+    {"id": "frame_gold", "type": "frame", "unlock": "level", "level": 20},
+    {"id": "frame_neon", "type": "frame", "unlock": "premium"}
+  ]
+}

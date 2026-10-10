@@ -64,6 +64,10 @@ static func open() -> Control:
 	var priv := UiKit.label(TranslationServer.translate("SETTINGS_PRIVACY_NOTE"), 17, Palette.TEXT_DIM, 600)
 	priv.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_child(priv)
+	if Ads.privacy_options_required():
+		var po := UiKit.button(TranslationServer.translate("SETTINGS_AD_PRIVACY"), UiKit.Variant.SECONDARY, Vector2(0, 50))
+		po.pressed.connect(func(): Ads.show_privacy_options(func(): pass))
+		body.add_child(po)
 	var docs := UiKit.hbox(10)
 	body.add_child(docs)
 	var pp := UiKit.button(TranslationServer.translate("SETTINGS_PRIVACY_POLICY"), UiKit.Variant.GHOST, Vector2(0, 50))
@@ -78,7 +82,7 @@ static func open() -> Control:
 
 	_section(body, "SETTINGS_ABOUT")
 	body.add_child(UiKit.label("Card Rush v%s  ·  Poyraz Yazılım" % ProjectSettings.get_setting("application/config/version"), 18, Palette.TEXT_DIM))
-	body.add_child(UiKit.label(TranslationServer.translate("SETTINGS_PREMIUM_STATUS_NONE"), 17, Palette.TEXT_MUTED))
+	body.add_child(UiKit.label(TranslationServer.translate("SETTINGS_PREMIUM_STATUS_ON" if Store.is_premium() else "SETTINGS_PREMIUM_STATUS_NONE"), 17, Palette.SUCCESS if Store.is_premium() else Palette.TEXT_MUTED))
 
 	var close := UiKit.button(TranslationServer.translate("BTN_CLOSE"), UiKit.Variant.PRIMARY, Vector2(220, 58))
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER

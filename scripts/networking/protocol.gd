@@ -20,6 +20,7 @@ const C_PING := "ping"
 const C_LEAVE := "leave"
 const C_VOICE := "v"
 const C_VOICE_PREF := "vpref"
+const C_AD_RESULT := "adres"
 # host -> client
 const S_WELCOME := "welcome"
 const S_REJECT := "reject"
@@ -31,6 +32,9 @@ const S_PONG := "pong"
 const S_CLOSED := "closed"
 const S_KICKED := "kicked"
 const S_VOICE := "v"
+const S_AD_EVENT := "adev"
+const S_AD_STATUS := "adst"
+const AD_STATUSES := ["pending", "declined", "unavailable", "watching", "completed", "not_completed"]
 
 const ACTION_TYPES := ["play", "draw", "pass", "accept", "challenge", "choose_color", "uno", "catch"]
 

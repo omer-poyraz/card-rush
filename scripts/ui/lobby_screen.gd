@@ -352,6 +352,7 @@ var _room_list: VBoxContainer
 var _start_btn: Button
 var _ready_btn: Button
 var _rules_label: Label
+var _ad_status: Label
 
 
 func _show_room() -> void:
@@ -432,6 +433,23 @@ func _show_room() -> void:
 	_status = UiKit.label("", 16, Palette.SUN, 700)
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rv.add_child(_status)
+	_ad_status = UiKit.label("", 15, Palette.TEXT_DIM, 650)
+	_ad_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	rv.add_child(_ad_status)
+	if Net.host:
+		var adb := UiKit.button(tr("ADEVENT_START"), UiKit.Variant.GHOST, Vector2(0, 50))
+		adb.tooltip_text = tr("ADEVENT_START_TIP")
+		adb.pressed.connect(func():
+			var err := Net.host.propose_ad_event(AdConfig.REWARDED_COINS)
+			if err != "":
+				App.toast(tr(err), Palette.SUN)
+				return
+			AdEventDialog.open(Net.host.ad_event["id"], AdConfig.REWARDED_COINS, tr("TABLE_YOU")))
+		rv.add_child(adb)
+		Net.host.ad_event_changed.connect(func(): _show_ad_status(Net.host.ad_event.get("statuses", {})))
+	else:
+		Net.client.ad_event_proposed.connect(func(id, coins, from): AdEventDialog.open(id, coins, from))
+		Net.client.ad_event_status.connect(func(_id, st): _show_ad_status(st))
 	if Net.host:
 		_start_btn = UiKit.button(tr("LOBBY_START"), UiKit.Variant.ACCENT, Vector2(0, 68))
 		_start_btn.pressed.connect(func():
@@ -453,6 +471,18 @@ func _show_room() -> void:
 		Net.client.match_starting.connect(func(mc, _resume): _go_table(mc))
 		Net.client.state_changed.connect(_on_client_state)
 	_refresh_room()
+
+
+func _show_ad_status(statuses: Dictionary) -> void:
+	if _ad_status == null or not is_instance_valid(_ad_status):
+		return
+	var names := {}
+	for m in _lobby().get("members", []):
+		names[int(m["pid"])] = str(m["name"])
+	var parts := []
+	for pid in statuses:
+		parts.append("%s: %s" % [names.get(int(pid), "?"), tr("ADEVENT_ST_" + str(statuses[pid]).to_upper())])
+	_ad_status.text = tr("ADEVENT_STATUS") + " " + ", ".join(parts)
 
 
 func _lobby() -> Dictionary:

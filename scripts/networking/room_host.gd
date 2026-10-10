@@ -15,6 +15,7 @@ signal match_started(local_client: LocalMatchClient)
 signal match_ended
 signal room_closed(reason: String)
 signal member_event(kind: String, name: String)
+signal ad_event_changed
 
 const HOST_PID := 1
 const HELLO_TIMEOUT_MS := 6000
@@ -342,6 +343,8 @@ func _on_message(peer: int, msg: Dictionary) -> void:
 				_bump()
 		NetProtocol.C_ACT:
 			_on_act(pid, m, msg)
+		NetProtocol.C_AD_RESULT:
+			report_ad_result(pid, NetProtocol.str_field(msg, "id", 16), NetProtocol.str_field(msg, "status", 16))
 		NetProtocol.C_VOICE_PREF:
 			m["voice_recv"] = bool(msg.get("recv", true))
 		NetProtocol.C_PING:
@@ -395,6 +398,9 @@ func _on_hello(peer: int, msg: Dictionary) -> void:
 		_reject(peer, "ERR_NET_ROOM_FULL")
 		return
 	var name := NameFilter.sanitize_remote(NetProtocol.str_field(msg, "name", 24), TranslationServer.translate("DEFAULT_PLAYER_NAME") + str(_next_pid))
+	if FriendsService.local().is_blocked(name):
+		_reject(peer, "ERR_NET_REJECTED")
+		return
 	var pid := _next_pid
 	_next_pid += 1
 	members[pid] = {
@@ -440,6 +446,35 @@ func _on_act(pid: int, m: Dictionary, msg: Dictionary) -> void:
 	var r := authority.submit(seat_of_pid[pid], action)
 	if not r["ok"]:
 		transport.send(int(m["peer"]), {"k": NetProtocol.S_REJECTED, "seq": seq, "error": r["error"]})
+
+
+# --- shared rewarded-ad event (optional, outside active play) ---------------------------
+
+var ad_event := {}           # {id, coins, statuses: {pid: status}}
+
+
+## Host proposes; every player decides on their own device. Never during an
+## active hand. Returns "" or an error key.
+func propose_ad_event(coins: int) -> String:
+	if in_match and authority and authority.state.phase < GameState.Phase.MATCH_OVER:
+		return "ERR_AD_EVENT_MID_MATCH"
+	var statuses := {}
+	for pid in members:
+		statuses[pid] = "pending"
+	ad_event = {"id": Crypto.new().generate_random_bytes(6).hex_encode(), "coins": coins, "statuses": statuses}
+	_broadcast({"k": NetProtocol.S_AD_EVENT, "id": ad_event["id"], "coins": coins, "from": members[HOST_PID]["name"]})
+	ad_event_changed.emit()
+	return ""
+
+
+func report_ad_result(pid: int, event_id: String, status: String) -> void:
+	if ad_event.is_empty() or event_id != ad_event["id"] or not NetProtocol.AD_STATUSES.has(status):
+		return
+	if not ad_event["statuses"].has(pid):
+		return
+	ad_event["statuses"][pid] = status
+	_broadcast({"k": NetProtocol.S_AD_STATUS, "id": ad_event["id"], "statuses": ad_event["statuses"].duplicate()})
+	ad_event_changed.emit()
 
 
 # --- voice relay ----------------------------------------------------------------------

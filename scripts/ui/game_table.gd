@@ -16,6 +16,7 @@ var _recorded := false
 func _ready() -> void:
 	params = App.params.duplicate(true)
 	DisplayServer.screen_set_keep_on(true)
+	Ads.hide_banner()  # never over the cards
 	table = TableView.new()
 	add_child(table)
 	match str(params.get("mode", "offline")):
@@ -25,7 +26,7 @@ func _ready() -> void:
 				Net.client.state_changed.connect(_on_room_state)
 		_:
 			_start_offline()
-	table.back_style = str(Save.section("cosmetics").get("equipped", {}).get("back", "back_classic"))
+	table.back_style = Cosmetics.equipped("back")
 	table.bind(client)
 	table.leave_requested.connect(_open_pause)
 	table.match_over.connect(_on_match_over)
@@ -129,6 +130,20 @@ func _on_match_over(v: Dictionary, _events: Array) -> void:
 				s += int(l)
 			avg = roundi(float(s) / levels.size())
 		var st := table.stats()
+		var rules := RuleProfile.from_dict(v.get("rules", {}))
+		var won := int(v["match_winner"]) == me
+		var mres := {"won": won, "cards_played": st["cards_played"], "actions": st["actions"], "uno_calls": st["uno_calls"],
+			"catches": st["catches"], "online": _online(), "bot_level": avg, "points_mode": rules.scoring_mode != RuleProfile.ScoringMode.SINGLE_ROUND}
+		Missions.on_match(mres)
+		if _online():
+			var names := []
+			for i in v["players"].size():
+				if i != me and not v["players"][i]["is_bot"]:
+					names.append(v["players"][i]["name"])
+			FriendsService.local().record_players(names, true)
+		# small cosmetic coin reward per finished match (unique key: paid once)
+		Economy.grant(15 if won else 5, "match", "match:%d:%d" % [int(Time.get_unix_time_from_system()), randi()])
+		Ads.on_match_completed()
 		xp = Progression.record_match({
 			"won": int(v["match_winner"]) == me, "players": v["players"].size(), "bot_level": avg,
 			"cards_played": st["cards_played"], "uno_calls": st["uno_calls"], "catches": st["catches"],
@@ -148,10 +163,11 @@ func _back_to_lobby() -> void:
 	client.unbind()
 	if Net.host:
 		Net.host.end_match()
-	if Net.is_active():
-		App.goto("lobby", {"action": "room"})
-	else:
-		App.goto("menu")
+	Ads.maybe_show_interstitial(func():
+		if Net.is_active():
+			App.goto("lobby", {"action": "room"})
+		else:
+			App.goto("menu"))
 
 
 var _leaving := false
@@ -168,7 +184,8 @@ func _on_room_state(s: String, detail: String) -> void:
 
 
 func _rematch() -> void:
-	App.goto("table", params)
+	# natural break: an interstitial may show here (never during a turn)
+	Ads.maybe_show_interstitial(func(): App.goto("table", params))
 
 
 func _leave(forfeit: bool) -> void:
@@ -185,7 +202,11 @@ func _leave(forfeit: bool) -> void:
 			_back_to_lobby()
 		return
 	client.leave()
-	App.goto(str(params.get("return_to", "menu")))
+	var target := str(params.get("return_to", "menu"))
+	if forfeit:
+		App.goto(target)
+	else:
+		Ads.maybe_show_interstitial(func(): App.goto(target))
 
 
 func handle_back() -> void:

@@ -38,6 +38,8 @@ static func defaults() -> Dictionary:
 		"room_setup": {},
 		"ads": {},
 		"store": {},
+		"wallet": {"coins": 0, "ledger": [], "history": []},
+		"net": {},
 		"flags": {},
 	}
 

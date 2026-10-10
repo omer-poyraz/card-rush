@@ -14,6 +14,7 @@ var direction := 1
 var _rot := 0.0
 var _color_anim := 1.0
 var _shown_color := Color.TRANSPARENT
+var theme_colors := Cosmetics.table_theme()
 
 
 func _ready() -> void:
@@ -42,15 +43,18 @@ func _draw() -> void:
 	# table oval: layered fills for a soft vignette and a glowing rim
 	var pts := _ellipse(center, radii, 64)
 	draw_colored_polygon(_ellipse(center + Vector2(0, 14), radii * 1.02, 64), Color(0, 0, 0, 0.35))
-	draw_colored_polygon(pts, Color("18144a"))
+	var felt: Color = theme_colors["felt"]
+	var felt2: Color = theme_colors["felt2"]
+	var rim_col: Color = theme_colors["rim"]
+	draw_colored_polygon(pts, felt)
 	for i in 5:
 		var k := 1.0 - i * 0.16
-		draw_colored_polygon(_ellipse(center, radii * k, 48), Color("1f1a5e").lerp(Color("2a2378"), i / 4.0) * Color(1, 1, 1, 0.55))
+		draw_colored_polygon(_ellipse(center, radii * k, 48), felt.lerp(felt2, i / 4.0) * Color(1, 1, 1, 0.55))
 	var rim := pts.duplicate()
 	rim.append(pts[0])
 	for i in 3:
-		draw_polyline(rim, Color(Palette.ELECTRIC, 0.12 / (i + 1)), 6.0 + i * 6.0, true)
-	draw_polyline(rim, Color(Palette.ELECTRIC, 0.65), 2.5, true)
+		draw_polyline(rim, Color(rim_col, 0.12 / (i + 1)), 6.0 + i * 6.0, true)
+	draw_polyline(rim, Color(rim_col, 0.65), 2.5, true)
 	# inner decorative ring
 	var inner := _ellipse(center, radii * 0.62, 48)
 	inner.append(inner[0])

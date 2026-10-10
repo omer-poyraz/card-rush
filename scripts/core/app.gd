@@ -9,6 +9,10 @@ const SCENES := {
 	"table": "res://scenes/game/game_table.tscn",
 	"lobby": "res://scenes/lobby/lobby.tscn",
 	"profile": "res://scenes/menus/profile.tscn",
+	"store": "res://scenes/menus/store.tscn",
+	"collection": "res://scenes/menus/collection.tscn",
+	"missions": "res://scenes/menus/missions.tscn",
+	"friends": "res://scenes/menus/friends.tscn",
 }
 
 var params := {}             # data handed to the next scene

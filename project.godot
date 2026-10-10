@@ -8,6 +8,10 @@
 
 config_version=5
 
+[admob]
+
+general/android/app_id="ca-app-pub-8602764456287198~3978960722"
+
 [application]
 
 config/name="Card Rush"
@@ -32,6 +36,13 @@ Audio="*res://scripts/core/audio_manager.gd"
 App="*res://scripts/core/app.gd"
 Net="*res://scripts/networking/network_manager.gd"
 Voice="*res://scripts/voice/voice_chat_manager.gd"
+Store="*res://scripts/purchases/purchase_manager.gd"
+Ads="*res://scripts/ads/ad_manager.gd"
+
+[card_rush]
+
+online/signaling_url=""
+store/android_package="com.poyrazyazilim.cardrush"
 
 [display]
 
@@ -43,10 +54,13 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/admob/plugin.cfg", "res://addons/GodotGooglePlayBilling/plugin.cfg")
+
 [internationalization]
 
 locale/translations=PackedStringArray("res://data/localization/strings.tr.translation", "res://data/localization/strings.en.translation")
-locale/fallback="en"
 
 [physics]
 

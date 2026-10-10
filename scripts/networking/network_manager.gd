@@ -184,6 +184,14 @@ func _clear() -> void:
 
 
 ## The match client for this device in the running match (host or remote).
+## Reports this device's answer to a shared ad event (host or client).
+func report_ad_result(event_id: String, status: String) -> void:
+	if host:
+		host.report_ad_result(RoomHost.HOST_PID, event_id, status)
+	elif client:
+		client.send_ad_result(event_id, status)
+
+
 ## seat -> pid for the running match (to show who is speaking).
 func pid_of_seat() -> Dictionary:
 	if host:

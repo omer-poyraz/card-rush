@@ -8,6 +8,8 @@ signal state_changed(state: String, detail: String)
 signal lobby_updated(lobby: Dictionary)
 signal match_starting(client: NetworkMatchClient, resume: bool)
 signal rejected(reason: String)
+signal ad_event_proposed(event_id: String, coins: int, from_name: String)
+signal ad_event_status(event_id: String, statuses: Dictionary)
 
 const RECONNECT_WINDOW_MS := 30000
 const RECONNECT_EVERY_S := 2.0
@@ -156,6 +158,12 @@ func _on_message(_from: int, msg: Dictionary) -> void:
 		NetProtocol.S_REJECTED:
 			if match_client:
 				match_client.action_rejected.emit(NetProtocol.str_field(msg, "error", 40))
+		NetProtocol.S_AD_EVENT:
+			ad_event_proposed.emit(NetProtocol.str_field(msg, "id", 16), NetProtocol.int_field(msg, "coins", 0, 0, 1000),
+				NameFilter.sanitize_remote(NetProtocol.str_field(msg, "from", 24), "?"))
+		NetProtocol.S_AD_STATUS:
+			if msg.get("statuses") is Dictionary:
+				ad_event_status.emit(NetProtocol.str_field(msg, "id", 16), msg["statuses"])
 		NetProtocol.S_VOICE:
 			var d: Variant = msg.get("d")
 			if d is PackedByteArray:
@@ -186,6 +194,11 @@ func send_action(a: Dictionary) -> void:
 	var clean := a.duplicate()
 	clean.erase("player")
 	transport.send(NetTransport.HOST_ID, {"k": NetProtocol.C_ACT, "seq": _seq, "a": clean})
+
+
+func send_ad_result(event_id: String, status: String) -> void:
+	if transport:
+		transport.send(NetTransport.HOST_ID, {"k": NetProtocol.C_AD_RESULT, "id": event_id, "status": status})
 
 
 func set_ready(r: bool) -> void:

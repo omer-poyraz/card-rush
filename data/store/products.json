@@ -1,0 +1,9 @@
+{
+  "products": [
+    {"id": "cardrush_premium", "type": "inapp", "grants": "premium", "platforms": ["android", "ios"]},
+    {"id": "cardrush_premium_monthly", "type": "subs", "grants": "premium", "platforms": ["android"]},
+    {"id": "cardrush_premium_yearly", "type": "subs", "grants": "premium", "platforms": ["android"]},
+    {"id": "cardrush_pack_neon", "type": "inapp", "grants": "pack", "items": ["back_neon", "back_gold", "back_mint"], "platforms": ["android", "ios"]}
+  ],
+  "_note": "Product ids must be created with the same ids in Google Play Console / App Store Connect. Subscriptions are Android-only: without server-side receipt validation iOS cannot verify subscription expiry on device."
+}
